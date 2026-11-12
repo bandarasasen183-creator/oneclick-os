@@ -68,9 +68,17 @@ setcfg kwinrc Plugins scaleEnabled false
 setcfg kwinrc Plugins fadeEnabled false
 
 ### Start-up screen
-# Replace the scrolling text with a graphical splash: our logo with a spinner.
+# Replace the scrolling text with a graphical splash: our animated logo.
 # (system_files adds the "quiet rhgb" kernel options and the unit that hides the text boot menu.)
-cp /ctx/boot/watermark.png /usr/share/plymouth/themes/spinner/watermark.png
+# Our own animated theme: 60 frames of the logo drawing itself. The password-prompt
+# images come from the stock theme so encrypted disks still get a proper prompt.
+PLY=/usr/share/plymouth/themes
+mkdir -p "${PLY}/oneclick"
+cp /ctx/boot/plymouth/* "${PLY}/oneclick/"
+for img in lock entry bullet capslock keyboard keymap-render; do
+    cp "${PLY}/spinner/${img}.png" "${PLY}/oneclick/" || true
+done
+plymouth-set-default-theme oneclick
 systemctl enable oneclick-hide-boot-menu.service
 # The splash lives in the early-boot image, so rebuild that image to pick up the logo.
 KVER="$(ls /usr/lib/modules | sort -V | tail -1)"
