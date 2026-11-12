@@ -1,0 +1,29 @@
+#!/usr/bin/bash
+# OneClick Update: checks for a newer system, downloads it, and offers to restart into it.
+# The download happens alongside the running system, so nothing changes until restart,
+# and the previous version stays available to go back to.
+set -u
+TITLE="OneClick Update"
+
+progress=$(kdialog --title "$TITLE" --progressbar "Checking for updates..." 0)
+qdbus-qt6 $progress showCancelButton false >/dev/null 2>&1
+
+out=$(pkexec /usr/libexec/oneclick-update-helper 2>&1)
+status=$?
+qdbus-qt6 $progress close >/dev/null 2>&1
+
+case $status in
+    0)
+        if kdialog --title "$TITLE" --yesno "A new version is ready.\n\nRestart now to start using it? Your apps will close." \
+            --yes-label "Restart now" --no-label "Later"; then
+            systemctl reboot
+        else
+            kdialog --title "$TITLE" --msgbox "The new version will be used the next time you restart."
+        fi ;;
+    2)
+        kdialog --title "$TITLE" --msgbox "You are up to date." ;;
+    126|127)
+        ;;  # the person cancelled the permission prompt
+    *)
+        kdialog --title "$TITLE" --error "The update could not be downloaded. Check your internet connection and try again.\n\nDetails:\n$(echo "$out" | tail -3)" ;;
+esac

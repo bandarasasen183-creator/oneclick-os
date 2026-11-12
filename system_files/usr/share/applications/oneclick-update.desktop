@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Update
+GenericName=Check for updates
+Comment=Download the newest version of OneClick OS
+Exec=/usr/bin/oneclick-update
+Icon=oneclick-update
+Categories=System;Settings;
+Keywords=update;upgrade;new version;

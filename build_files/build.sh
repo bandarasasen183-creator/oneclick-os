@@ -19,7 +19,7 @@ setcfg() {
 
 ### System files (handlers, default app associations, icons, boot settings)
 cp -avf /ctx/system_files/. /
-chmod 755 /usr/bin/oneclick-open-windows-app
+chmod 755 /usr/bin/oneclick-open-windows-app /usr/bin/oneclick-update /usr/libexec/oneclick-update-helper
 
 ### Branding
 # Only the display name and links change. ID and ID_LIKE stay as the base image set

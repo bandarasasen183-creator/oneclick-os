@@ -13,7 +13,8 @@ tasks.writeConfig("launchers", [
     "preferred://browser",
     "preferred://filemanager",
     "applications:org.kde.discover.desktop",
-    "applications:systemsettings.desktop"
+    "applications:systemsettings.desktop",
+    "applications:oneclick-update.desktop"
 ])
 
 panel.addWidget("org.kde.plasma.marginsseparator")
