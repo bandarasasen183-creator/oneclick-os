@@ -40,4 +40,7 @@ exec qemu-system-aarch64 \
     -device virtio-gpu-pci -display cocoa,show-cursor=on \
     -device qemu-xhci -device usb-kbd -device usb-tablet \
     -nic user,model=virtio-net-pci \
+    -monitor unix:"${VM_DIR}/monitor.sock",server,nowait \
+    -qmp unix:"${VM_DIR}/qmp.sock",server,nowait \
+    -serial file:"${VM_DIR}/boot.log" \
     -audiodev coreaudio,id=snd -device ich9-intel-hda -device hda-output,audiodev=snd
