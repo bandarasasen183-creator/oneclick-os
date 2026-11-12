@@ -104,6 +104,11 @@ sed -e 's/^Name=.*/Name=OneClick Dark/' \
     "${SCHEMES}/BreezeDark.colors" > "${SCHEMES}/OneClickDark.colors"
 # Make it the default look for every new user, and use our wallpaper on the lock screen.
 setcfg kdeglobals KDE LookAndFeelPackage org.oneclick.desktop
+# Plasma swaps the look to follow light/dark mode by default, which is what switched
+# testers back to stock Breeze Dark. Point both modes at ours and turn the swap off.
+setcfg kdeglobals KDE DefaultLightLookAndFeel org.oneclick.desktop
+setcfg kdeglobals KDE DefaultDarkLookAndFeel org.oneclick.desktop
+setcfg kdeglobals KDE AutomaticLookAndFeel false
 setcfg kdeglobals General ColorScheme OneClickDark
 setcfg kdeglobals General AccentColor 45,212,191
 setcfg ksplashrc KSplash Theme org.oneclick.desktop
