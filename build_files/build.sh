@@ -44,3 +44,14 @@ kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key dimscreenEnabled true
 kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key glideEnabled true
 kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key scaleEnabled false
 kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key fadeEnabled false
+
+### Start-up screen
+# Replace the scrolling text with a graphical splash: our logo with a spinner.
+# (system_files adds the "quiet rhgb" kernel options and the unit that hides the text boot menu.)
+cp /ctx/boot/watermark.png /usr/share/plymouth/themes/spinner/watermark.png
+systemctl enable oneclick-hide-boot-menu.service
+# The splash lives in the early-boot image, so rebuild that image to pick up the logo.
+KVER="$(ls /usr/lib/modules | sort -V | tail -1)"
+DRACUT_NO_XATTR=1 dracut --no-hostonly --kver "${KVER}" --reproducible --add ostree \
+    -f "/usr/lib/modules/${KVER}/initramfs.img"
+chmod 0600 "/usr/lib/modules/${KVER}/initramfs.img"
