@@ -1,9 +1,9 @@
-// Shown between logging in and the desktop appearing.
+// Shown between logging in and the desktop appearing. Flat: the mark, and three dots that light up in turn.
 import QtQuick
 
 Rectangle {
     id: root
-    color: "#040816"
+    color: "#000000"
     property int stage
 
     onStageChanged: {
@@ -17,39 +17,17 @@ Rectangle {
         anchors.fill: parent
         opacity: 0
 
-        // Soft glow that breathes behind the logo
-        Rectangle {
-            id: glow
-            anchors.centerIn: logo
-            width: 420
-            height: 420
-            radius: 210
-            color: "#2dd4bf"
-            opacity: 0.06
-            SequentialAnimation on scale {
-                loops: Animation.Infinite
-                NumberAnimation { from: 0.8; to: 1.15; duration: 1600; easing.type: Easing.InOutSine }
-                NumberAnimation { from: 1.15; to: 0.8; duration: 1600; easing.type: Easing.InOutSine }
-            }
-        }
-
         Image {
             id: logo
             anchors.centerIn: parent
             source: "images/logo.svg"
-            sourceSize.width: 180
-            sourceSize.height: 180
-            SequentialAnimation on scale {
-                loops: Animation.Infinite
-                NumberAnimation { from: 1.0; to: 1.05; duration: 1600; easing.type: Easing.InOutSine }
-                NumberAnimation { from: 1.05; to: 1.0; duration: 1600; easing.type: Easing.InOutSine }
-            }
+            sourceSize.width: 150
+            sourceSize.height: 150
         }
 
-        // Three dots that light up in turn
         Row {
             anchors.top: logo.bottom
-            anchors.topMargin: 56
+            anchors.topMargin: 64
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 14
             Repeater {
@@ -57,16 +35,16 @@ Rectangle {
                 Rectangle {
                     id: dot
                     required property int index
-                    width: 10
-                    height: 10
-                    radius: 5
-                    color: "#34d399"
-                    opacity: 0.2
+                    width: 8
+                    height: 8
+                    radius: 4
+                    color: "#ffffff"
+                    opacity: 0.25
                     SequentialAnimation on opacity {
                         loops: Animation.Infinite
                         PauseAnimation { duration: dot.index * 220 }
                         NumberAnimation { to: 1.0; duration: 380; easing.type: Easing.OutQuad }
-                        NumberAnimation { to: 0.2; duration: 380; easing.type: Easing.InQuad }
+                        NumberAnimation { to: 0.25; duration: 380; easing.type: Easing.InQuad }
                         PauseAnimation { duration: (2 - dot.index) * 220 }
                     }
                 }
@@ -80,7 +58,7 @@ Rectangle {
         target: content
         from: 0
         to: 1
-        duration: 700
+        duration: 500
         easing.type: Easing.InOutQuad
     }
 }

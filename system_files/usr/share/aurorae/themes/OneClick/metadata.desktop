@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=OneClick
+Comment=Flat title bar with classic minimise, maximise and close buttons
+X-KDE-PluginInfo-Name=OneClick
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-License=Apache-2.0
+X-KDE-PluginInfo-EnabledByDefault=true
