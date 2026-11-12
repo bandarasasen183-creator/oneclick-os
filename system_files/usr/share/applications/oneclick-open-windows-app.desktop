@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Windows Program
+Comment=Run a Windows program
+Exec=/usr/bin/oneclick-open-windows-app %f
+Icon=application-x-ms-dos-executable
+NoDisplay=true
+MimeType=application/x-ms-dos-executable;application/x-msdownload;application/vnd.microsoft.portable-executable;application/x-msi;

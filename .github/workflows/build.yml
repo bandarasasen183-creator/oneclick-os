@@ -1,0 +1,71 @@
+---
+name: Build images
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'mac/**'
+      - 'disk_config/**'
+  schedule:
+    - cron: '05 10 * * *' # daily, to pick up the base image's updates
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: oneclick-os
+            base: ghcr.io/ublue-os/bazzite:stable
+            runner: ubuntu-26.04
+          - image: oneclick-os-nvidia
+            base: ghcr.io/ublue-os/bazzite-nvidia-open:stable
+            runner: ubuntu-26.04
+          - image: oneclick-os-preview
+            base: quay.io/fedora-ostree-desktops/kinoite:44
+            runner: ubuntu-26.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ${{ matrix.image }}
+      BASE: ${{ matrix.base }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Free up disk space
+        if: matrix.runner == 'ubuntu-26.04'
+        uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6
+
+      - name: Install podman
+        if: matrix.runner != 'ubuntu-26.04'
+        run: sudo apt-get update -y && sudo apt-get install -y podman
+
+      - name: Build
+        run: |
+          sudo podman build \
+            --build-arg BASE_IMAGE="${BASE}" \
+            --build-arg IMAGE_NAME="${IMAGE}" \
+            --label org.opencontainers.image.source="https://github.com/${GITHUB_REPOSITORY}" \
+            --label org.opencontainers.image.title="${IMAGE}" \
+            --tag "${IMAGE}:latest" \
+            .
+
+      - name: Push
+        if: github.ref == 'refs/heads/main'
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"
+          echo "${TOKEN}" | sudo podman login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+          sudo podman push "${IMAGE}:latest" "${REGISTRY}/${IMAGE}:latest"
+          sudo podman push "${IMAGE}:latest" "${REGISTRY}/${IMAGE}:$(date +%Y%m%d)"

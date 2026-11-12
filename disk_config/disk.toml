@@ -1,0 +1,10 @@
+# Ready-to-boot virtual machine disk (no installer step). Used for the Mac preview.
+# The account below exists only inside that test virtual machine.
+[[customizations.user]]
+name = "tester"
+password = "oneclick"
+groups = ["wheel"]
+
+[[customizations.filesystem]]
+mountpoint = "/"
+minsize = "24 GiB"

@@ -1,0 +1,34 @@
+#!/usr/bin/bash
+# Opens a Windows program (.exe, .msi) when the user double-clicks it.
+# Tries what is installed, and explains plainly when nothing can run it.
+set -u
+
+file="${1:-}"
+title="Windows program"
+
+if [[ -z "$file" || ! -f "$file" ]]; then
+    kdialog --title "$title" --error "That file could not be found."
+    exit 1
+fi
+
+name="$(basename "$file")"
+
+# Windows programs are built for Intel and AMD processors.
+if [[ "$(uname -m)" != "x86_64" ]]; then
+    kdialog --title "$title" --sorry \
+        "\"$name\" is a Windows program. This preview runs on an Arm processor, which cannot run Windows programs. They are supported on the PC version."
+    exit 0
+fi
+
+if command -v wine >/dev/null 2>&1; then
+    exec wine start /unix "$file"
+fi
+
+if flatpak info com.usebottles.bottles >/dev/null 2>&1; then
+    exec flatpak run --file-forwarding com.usebottles.bottles @@ "$file" @@
+fi
+
+if kdialog --title "$title" --yesno \
+    "\"$name\" is a Windows program. To run it, the free app Bottles needs to be installed once.\n\nOpen the app store to install Bottles?"; then
+    xdg-open "appstream://com.usebottles.bottles"
+fi

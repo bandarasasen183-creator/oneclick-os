@@ -1,0 +1,5 @@
+[Default Applications]
+application/x-ms-dos-executable=oneclick-open-windows-app.desktop
+application/x-msdownload=oneclick-open-windows-app.desktop
+application/vnd.microsoft.portable-executable=oneclick-open-windows-app.desktop
+application/x-msi=oneclick-open-windows-app.desktop
