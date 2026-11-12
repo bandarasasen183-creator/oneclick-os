@@ -42,5 +42,5 @@ exec qemu-system-aarch64 \
     -nic user,model=virtio-net-pci,hostfwd=tcp:127.0.0.1:2222-:22 \
     -monitor unix:"${VM_DIR}/monitor.sock",server,nowait \
     -qmp unix:"${VM_DIR}/qmp.sock",server,nowait \
-    -serial file:"${VM_DIR}/boot.log" \
+    -serial unix:"${VM_DIR}/serial.sock",server,nowait \
     -audiodev coreaudio,id=snd -device ich9-intel-hda -device hda-output,audiodev=snd
