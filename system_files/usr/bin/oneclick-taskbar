@@ -1,0 +1,34 @@
+#!/usr/bin/bash
+# Taskbar settings: a small window with the options people look for first.
+# Applies straight away to every taskbar on the desktop.
+set -u
+TITLE="Taskbar"
+
+shell() { qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$1" 2>/dev/null; }
+
+state=$(shell 'var p = panels()[0]; print(p.hiding + " " + p.floating + " " + p.location + " " + p.height)')
+read -r hiding floating location height <<< "${state:-none false bottom 44}"
+
+on() { [[ "$1" == "$2" ]] && echo on || echo off; }
+size=medium; (( height <= 38 )) && size=small; (( height >= 56 )) && size=large
+
+choice=$(kdialog --title "$TITLE" --separate-output --checklist "Choose how the taskbar behaves:" \
+    autohide  "Hide automatically (slides back when the pointer reaches the edge)" "$(on "$hiding" autohide)" \
+    dodge     "Move out of the way of windows that touch it"                       "$(on "$hiding" dodgewindows)" \
+    floating  "Floating (a rounded bar with a gap around it)"                      "$(on "$floating" true)" \
+    top       "Show at the top of the screen"                                      "$(on "$location" top)" \
+    small     "Small"                                                               "$(on "$size" small)" \
+    large     "Large"                                                               "$(on "$size" large)") || exit 0
+
+has() { grep -qx "$1" <<< "$choice"; }
+new_hiding=none;  has dodge && new_hiding=dodgewindows; has autohide && new_hiding=autohide
+new_floating=false; has floating && new_floating=true
+new_location=bottom; has top && new_location=top
+new_height=44; has small && new_height=34; has large && new_height=60
+
+shell "panels().forEach(function (p) {
+    p.hiding = '${new_hiding}';
+    p.floating = ${new_floating};
+    p.location = '${new_location}';
+    p.height = ${new_height};
+});"

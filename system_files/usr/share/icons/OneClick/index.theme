@@ -3,7 +3,7 @@ Name=OneClick
 Comment=OneClick OS icons (our own icons on top of Papirus)
 Inherits=Papirus,breeze,hicolor
 Example=folder
-Directories=scalable/places,scalable/apps
+Directories=scalable/places,scalable/apps,scalable/panel
 
 [scalable/places]
 Size=64
@@ -18,3 +18,10 @@ MinSize=16
 MaxSize=512
 Type=Scalable
 Context=Applications
+
+[scalable/panel]
+Size=22
+MinSize=12
+MaxSize=96
+Type=Scalable
+Context=Status

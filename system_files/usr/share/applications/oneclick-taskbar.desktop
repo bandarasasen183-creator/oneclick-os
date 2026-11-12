@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Taskbar
+GenericName=Taskbar settings
+Comment=Hide the taskbar automatically, make it float, move it or resize it
+Exec=/usr/bin/oneclick-taskbar
+Icon=oneclick-taskbar
+Categories=Settings;System;
+Keywords=taskbar;panel;auto-hide;autohide;floating;dock;

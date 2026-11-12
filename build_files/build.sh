@@ -19,7 +19,7 @@ setcfg() {
 
 ### System files (handlers, default app associations, icons, boot settings)
 cp -avf /ctx/system_files/. /
-chmod 755 /usr/bin/oneclick-open-windows-app /usr/bin/oneclick-update /usr/libexec/oneclick-update-helper
+chmod 755 /usr/bin/oneclick-open-windows-app /usr/bin/oneclick-update /usr/bin/oneclick-taskbar /usr/libexec/oneclick-update-helper
 
 ### Branding
 # Only the display name and links change. ID and ID_LIKE stay as the base image set
@@ -53,6 +53,7 @@ PLACES=/usr/share/icons/OneClick/scalable/places
 for name in start-here-kde start-here-kde-symbolic start-here-kde-plasma start-here-symbolic; do
     cp "${PLACES}/start-here.svg" "${PLACES}/${name}.svg"
 done
+python3 /ctx/fill_icon_gaps.py /usr/share/icons/OneClick /usr/share/icons/Papirus
 gtk-update-icon-cache -f /usr/share/icons/OneClick || true
 setcfg kdeglobals Icons Theme OneClick
 
