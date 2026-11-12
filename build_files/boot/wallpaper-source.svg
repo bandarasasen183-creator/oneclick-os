@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 3840" width="3840" height="3840">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#050b1c"/><stop offset="0.6" stop-color="#071226"/><stop offset="1" stop-color="#02040c"/></linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+    <radialGradient id="g1"><stop offset="0" stop-color="#10b981" stop-opacity="0.62"/><stop offset="0.5" stop-color="#10b981" stop-opacity="0.22"/><stop offset="1" stop-color="#10b981" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g2"><stop offset="0" stop-color="#06b6d4" stop-opacity="0.55"/><stop offset="0.5" stop-color="#06b6d4" stop-opacity="0.2"/><stop offset="1" stop-color="#06b6d4" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g3"><stop offset="0" stop-color="#6366f1" stop-opacity="0.55"/><stop offset="0.5" stop-color="#6366f1" stop-opacity="0.2"/><stop offset="1" stop-color="#6366f1" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g4"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.16"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
+    <radialGradient id="halo"><stop offset="0" stop-color="#2dd4bf" stop-opacity="0.22"/><stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/></radialGradient>
+    <radialGradient id="dot"><stop offset="0" stop-color="#fff" stop-opacity="0.5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <clipPath id="frame"><rect width="3840" height="2160"/></clipPath>
+  </defs>
+  <rect width="3840" height="3840" fill="#000"/>
+  <g transform="translate(0,840)" clip-path="url(#frame)">
+    <rect width="3840" height="2160" fill="url(#bg)"/>
+    <ellipse cx="520" cy="2100" rx="1900" ry="1100" fill="url(#g1)"/>
+    <ellipse cx="2000" cy="2500" rx="1900" ry="1100" fill="url(#g2)"/>
+    <ellipse cx="3500" cy="1900" rx="1700" ry="1200" fill="url(#g3)"/>
+    <ellipse cx="3300" cy="100" rx="1500" ry="800" fill="url(#g4)"/>
+    <circle cx="1920" cy="1010" r="900" fill="url(#halo)"/>
+    <path d="M1632 700 A480 480 0 1 0 2208 700" fill="none" stroke="url(#ring)" stroke-width="58" stroke-linecap="round"/>
+    <circle cx="1920" cy="610" r="130" fill="url(#dot)"/>
+    <circle cx="1920" cy="610" r="40" fill="#fff"/>
+  </g>
+</svg>

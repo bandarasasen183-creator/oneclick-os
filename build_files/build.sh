@@ -77,3 +77,30 @@ KVER="$(ls /usr/lib/modules | sort -V | tail -1)"
 DRACUT_NO_XATTR=1 dracut --no-hostonly --kver "${KVER}" --reproducible --add ostree \
     -f "/usr/lib/modules/${KVER}/initramfs.img"
 chmod 0600 "/usr/lib/modules/${KVER}/initramfs.img"
+
+### The OneClick look (colours, wallpaper, taskbar layout, login-to-desktop splash)
+# Colour scheme: Breeze Dark's structure with our deep navy and teal.
+SCHEMES=/usr/share/color-schemes
+sed -e 's/^Name=.*/Name=OneClick Dark/' \
+    -e '/^Name\[/d' \
+    -e 's/^ColorScheme=.*/ColorScheme=OneClickDark/' \
+    -e 's/61,174,233/45,212,191/g' \
+    -e 's/29,153,243/34,211,238/g' \
+    -e 's/32,35,38/11,18,36/g' \
+    -e 's/20,22,24/6,11,24/g' \
+    -e 's/41,44,48/20,30,52/g' \
+    -e 's/49,54,59/20,30,52/g' \
+    -e 's/35,38,41/11,18,36/g' \
+    -e 's/42,46,50/14,22,42/g' \
+    -e 's/27,30,32/8,14,30/g' \
+    "${SCHEMES}/BreezeDark.colors" > "${SCHEMES}/OneClickDark.colors"
+# Make it the default look for every new user, and use our wallpaper on the lock screen.
+setcfg kdeglobals KDE LookAndFeelPackage org.oneclick.desktop
+setcfg kdeglobals General ColorScheme OneClickDark
+setcfg kdeglobals General AccentColor 45,212,191
+setcfg ksplashrc KSplash Theme org.oneclick.desktop
+kwriteconfig6 --file /etc/xdg/kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image \
+    --group General --key Image "file:///usr/share/wallpapers/OneClick/"
+# Window title bars: bigger buttons, title on the left, like Windows.
+setcfg breezerc Windeco ButtonSize ButtonLarge
+setcfg breezerc Windeco TitleAlignment AlignLeft

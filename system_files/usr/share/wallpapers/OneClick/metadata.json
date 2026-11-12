@@ -1,0 +1,8 @@
+{
+    "KPlugin": {
+        "Id": "OneClick",
+        "Name": "OneClick",
+        "Authors": [ { "Name": "OneClick OS" } ],
+        "License": "CC-BY-SA-4.0"
+    }
+}
