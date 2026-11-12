@@ -5,24 +5,46 @@ set -ouex pipefail
 
 source /ctx/brand.env
 
-### System files (handlers, default app associations)
+# Sets a system-wide default for a desktop setting. kwriteconfig6 merges into the
+# file, so the base image's other settings survive. Fedora keeps its own defaults
+# in a second folder that wins over /etc/xdg, so write there too when it has the file.
+FEDORA_XDG=/usr/share/kde-settings/kde-profile/default/xdg
+setcfg() {
+    local file=$1 group=$2 key=$3 value=$4
+    kwriteconfig6 --file "/etc/xdg/${file}" --group "${group}" --key "${key}" "${value}"
+    if [[ -f "${FEDORA_XDG}/${file}" ]]; then
+        kwriteconfig6 --file "${FEDORA_XDG}/${file}" --group "${group}" --key "${key}" "${value}"
+    fi
+}
+
+### System files (handlers, default app associations, icons, boot settings)
 cp -avf /ctx/system_files/. /
 chmod 755 /usr/bin/oneclick-open-windows-app
 
 ### Branding
-# Only the display name changes. ID and ID_LIKE stay as the base image set them,
-# because the base image's own tools and third-party software check those.
+# Only the display name and links change. ID and ID_LIKE stay as the base image set
+# them, because the base image's own tools and third-party software check those.
 sed -i \
     -e "s|^NAME=.*|NAME=\"${BRAND_NAME}\"|" \
     -e "s|^PRETTY_NAME=.*|PRETTY_NAME=\"${BRAND_NAME}\"|" \
     -e "s|^DEFAULT_HOSTNAME=.*|DEFAULT_HOSTNAME=\"${BRAND_HOSTNAME}\"|" \
+    -e "s|^HOME_URL=.*|HOME_URL=\"${BRAND_URL}\"|" \
+    -e "s|^DOCUMENTATION_URL=.*|DOCUMENTATION_URL=\"${BRAND_URL}\"|" \
+    -e "s|^SUPPORT_URL=.*|SUPPORT_URL=\"${BRAND_URL}/issues\"|" \
+    -e "s|^BUG_REPORT_URL=.*|BUG_REPORT_URL=\"${BRAND_URL}/issues\"|" \
     /usr/lib/os-release
 echo "${IMAGE_NAME}" > /usr/share/oneclick-variant
+install -Dm644 /usr/share/icons/OneClick/scalable/places/start-here.svg /usr/share/pixmaps/oneclick-logo.svg
+
+### Welcome window (shown once after first login)
+setcfg plasma-welcomerc General IntroText "Welcome to ${BRAND_NAME}. Everything is already set up: your drivers, your apps and your games library are ready to go. This short tour shows you where things are."
+setcfg plasma-welcomerc General IntroIcon "file:///usr/share/pixmaps/oneclick-logo.svg"
+setcfg plasma-welcomerc General IntroIconLink "${BRAND_URL}"
+setcfg plasma-welcomerc General IntroIconCaption "${BRAND_NAME}"
 
 ### Desktop defaults (system-wide, so they apply to every new user)
 # Double-click opens, single-click selects, like Windows Explorer.
-# kwriteconfig6 merges into the file, so the base image's own settings survive.
-kwriteconfig6 --file /etc/xdg/kdeglobals --group KDE --key SingleClick false
+setcfg kdeglobals KDE SingleClick false
 
 ### Icons
 # Papirus is the base icon set; the OneClick theme sits on top with our own icons.
@@ -32,18 +54,18 @@ for name in start-here-kde start-here-kde-symbolic start-here-kde-plasma start-h
     cp "${PLACES}/start-here.svg" "${PLACES}/${name}.svg"
 done
 gtk-update-icon-cache -f /usr/share/icons/OneClick || true
-kwriteconfig6 --file /etc/xdg/kdeglobals --group Icons --key Theme OneClick
+setcfg kdeglobals Icons Theme OneClick
 
 ### Animations
 # Lively window effects on by default. Each is a normal switch in Settings, so anyone can turn it off.
-kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key wobblywindowsEnabled true
-kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key magiclampEnabled true
-kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key squashEnabled false
-kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key sheetEnabled true
-kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key dimscreenEnabled true
-kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key glideEnabled true
-kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key scaleEnabled false
-kwriteconfig6 --file /etc/xdg/kwinrc --group Plugins --key fadeEnabled false
+setcfg kwinrc Plugins wobblywindowsEnabled true
+setcfg kwinrc Plugins magiclampEnabled true
+setcfg kwinrc Plugins squashEnabled false
+setcfg kwinrc Plugins sheetEnabled true
+setcfg kwinrc Plugins dimscreenEnabled true
+setcfg kwinrc Plugins glideEnabled true
+setcfg kwinrc Plugins scaleEnabled false
+setcfg kwinrc Plugins fadeEnabled false
 
 ### Start-up screen
 # Replace the scrolling text with a graphical splash: our logo with a spinner.
