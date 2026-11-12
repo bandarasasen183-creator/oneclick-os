@@ -39,7 +39,7 @@ exec qemu-system-aarch64 \
     -drive if=virtio,format=qcow2,file="${WORK}" \
     -device virtio-gpu-pci -display cocoa,show-cursor=on \
     -device qemu-xhci -device usb-kbd -device usb-tablet \
-    -nic user,model=virtio-net-pci \
+    -nic user,model=virtio-net-pci,hostfwd=tcp:127.0.0.1:2222-:22 \
     -monitor unix:"${VM_DIR}/monitor.sock",server,nowait \
     -qmp unix:"${VM_DIR}/qmp.sock",server,nowait \
     -serial file:"${VM_DIR}/boot.log" \
