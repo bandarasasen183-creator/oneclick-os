@@ -18,7 +18,7 @@ def glyph(kind, color):
         return (f'<rect x="{cx-s+0.5}" y="{cy-s+2.5}" width="{2*s-3}" height="{2*s-3}" {a}/>'
                 f'<path d="M{cx-s+2.5} {cy-s+2.5} V{cy-s+0.5} H{cx+s-0.5} V{cy+s-2.5} H{cx+s-2.5}" {a}/>')
     if kind == "close":
-        return f'<path d="M{cx-s} {cy-s} L{cx+s} {cy+s} M{cx+s} {cy-s} L{cx-s} {cy+s}" {a} stroke-linecap="butt"/>'
+        return f'<path d="M{cx-s} {cy-s} L{cx+s} {cy+s} M{cx+s} {cy-s} L{cx-s} {cy+s}" stroke="{color}" stroke-width="1.1" fill="none"/>'
 
 def button(kind):
     red = kind == "close"
