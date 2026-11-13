@@ -1,1 +1,4 @@
-kargs = ["quiet", "rhgb"]
+# quiet + rhgb: graphical start-up instead of scrolling text.
+# plymouth.ignore-serial-consoles: keep the graphical start-up even when a serial console is
+# configured (virtual machines and some servers), which otherwise forces text mode.
+kargs = ["quiet", "rhgb", "plymouth.ignore-serial-consoles"]
