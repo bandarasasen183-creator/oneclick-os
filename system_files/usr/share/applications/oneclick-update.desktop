@@ -2,8 +2,13 @@
 Type=Application
 Name=Update
 GenericName=Check for updates
-Comment=Download the newest version of OneClick OS
+Comment=Download the newest version of OneClick OS, or go back to the previous one
 Exec=/usr/bin/oneclick-update
 Icon=oneclick-update
 Categories=System;Settings;
-Keywords=update;upgrade;new version;
+Keywords=update;upgrade;new version;rollback;previous version;
+Actions=rollback;
+
+[Desktop Action rollback]
+Name=Go back to previous version
+Exec=/usr/bin/oneclick-update --rollback

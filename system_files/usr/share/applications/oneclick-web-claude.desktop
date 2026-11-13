@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Claude
+Comment=AI assistant by Anthropic
+Exec=xdg-open https://claude.ai
+Icon=oneclick-web-claude
+Categories=Network;Office;
+Keywords=ai;chat;assistant;

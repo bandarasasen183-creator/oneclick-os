@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ChatGPT
+Comment=AI assistant by OpenAI
+Exec=xdg-open https://chatgpt.com
+Icon=oneclick-web-chatgpt
+Categories=Network;Office;
+Keywords=ai;chat;assistant;

@@ -1,8 +1,23 @@
 #!/usr/bin/bash
-# Runs as administrator for oneclick-update. Exit 0 = new version staged, 2 = already current.
+# Runs as administrator for the Update app.
+#   check     prints STAGED (a downloaded update waits for restart), AVAILABLE or NONE
+#   download  downloads the update and queues it for the next restart
+#   rollback  queues the previous version for the next restart
 set -o pipefail
-before=$(bootc status --json | python3 -c 'import sys,json;d=json.load(sys.stdin)["status"];s=d.get("staged") or {};print((s.get("image") or {}).get("imageDigest",""))')
-bootc upgrade --quiet || exit 1
-after=$(bootc status --json | python3 -c 'import sys,json;d=json.load(sys.stdin)["status"];s=d.get("staged") or {};print((s.get("image") or {}).get("imageDigest",""))')
-[[ -n "$after" ]] && exit 0
-exit 2
+
+staged() {
+    bootc status --json | python3 -c 'import sys,json; s=json.load(sys.stdin)["status"].get("staged"); print("yes" if s else "")'
+}
+
+case "${1:-}" in
+    check)
+        if [[ -n "$(staged)" ]]; then echo STAGED; exit 0; fi
+        out=$(bootc upgrade --check 2>&1) || { echo "$out" >&2; exit 1; }
+        if grep -q -i "no changes\|no update" <<< "$out"; then echo NONE; else echo AVAILABLE; fi ;;
+    download)
+        bootc upgrade --quiet ;;
+    rollback)
+        bootc rollback ;;
+    *)
+        echo "usage: $0 check|download|rollback" >&2; exit 2 ;;
+esac
