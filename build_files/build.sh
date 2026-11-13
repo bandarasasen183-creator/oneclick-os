@@ -267,3 +267,13 @@ sed -i 's|^ExecStart=.*|ExecStart=/usr/libexec/oneclick-boot-menu|' /usr/lib/sys
 if [[ "${IMAGE_NAME}" == "oneclick-os-preview" ]]; then
     systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
 fi
+
+### One updater only
+# The App Store also tried to update the system, and clashed with our Update app
+# ("System transaction in progress"). The App Store now only handles apps; system updates
+# are ours alone, and the Settings "Software Update" page opens our Update app.
+dnf5 remove -y plasma-discover-rpm-ostree || true
+if [[ -f /usr/share/applications/kcm_updates.desktop ]]; then
+    sed -i -e 's|^Exec=.*|Exec=/usr/bin/oneclick-update|' -e 's|^Name=.*|Name=Update|' -e '/^Name\[/d' \
+        /usr/share/applications/kcm_updates.desktop
+fi
