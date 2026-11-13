@@ -20,9 +20,9 @@ Rectangle {
         Image {
             id: logo
             anchors.centerIn: parent
-            source: "images/logo.svg"
-            sourceSize.width: 150
-            sourceSize.height: 150
+            source: "images/wordmark.svg"
+            sourceSize.width: 520
+            sourceSize.height: 130
         }
 
         Row {
