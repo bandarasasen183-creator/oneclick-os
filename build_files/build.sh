@@ -118,3 +118,145 @@ kwriteconfig6 --file /etc/xdg/kscreenlockerrc --group Greeter --group Wallpaper 
 # Window title bars: bigger buttons, title on the left, like Windows.
 setcfg breezerc Windeco ButtonSize ButtonLarge
 setcfg breezerc Windeco TitleAlignment AlignLeft
+
+### Plain names instead of project names
+# Menus, search and the taskbar show these. Only the visible names change; the programs are the same.
+rename() {  # rename <file in /usr/share/applications> <new name> [new generic name]
+    local f="/usr/share/applications/$1"
+    [[ -f "$f" ]] || return 0
+    sed -i -e "s|^Name=.*|Name=$2|" -e '/^Name\[/d' "$f"
+    if [[ -n "${3:-}" ]]; then sed -i -e "s|^GenericName=.*|GenericName=$3|" -e '/^GenericName\[/d' "$f"; fi
+}
+rename org.kde.dolphin.desktop          "Files"            "File manager"
+rename org.kde.konsole.desktop          "Terminal"         "Command line"
+rename org.kde.discover.desktop         "App Store"        "Install apps"
+rename org.kde.kwrite.desktop           "Text Editor"      "Text editor"
+rename org.kde.spectacle.desktop        "Screenshot"       "Take a screenshot"
+rename org.kde.ark.desktop              "Archives"         "Open and make zip files"
+rename org.kde.filelight.desktop        "Disk Usage"       "See what is using space"
+rename org.kde.kcharselect.desktop      "Characters"       "Special characters"
+rename org.kde.kfind.desktop            "Find Files"       "Search for files"
+rename org.kde.krfb.desktop             "Share My Screen"  "Let someone see your screen"
+rename org.kde.kwalletmanager.desktop   "Passwords"        "Saved passwords"
+rename org.kde.partitionmanager.desktop "Disks"            "Manage disks"
+rename org.kde.kdeconnect.app.desktop   "Phone Link"       "Connect your phone"
+rename org.kde.kdeconnect.sms.desktop   "Phone Messages"   "Text from your PC"
+rename org.kde.plasma-systemmonitor.desktop "Task Manager" "See what is running"
+rename org.kde.kjournaldbrowser.desktop "System Logs"      "System logs"
+rename org.kde.kmenuedit.desktop        "Edit Start Menu"  "Change the start menu"
+rename org.kde.drkonqi.coredump.gui.desktop "Problem Reports" "Apps that closed unexpectedly"
+rename org.kde.plasma-welcome.desktop   "Welcome"          "Welcome tour"
+rename kdesystemsettings.desktop        "Settings"         "Settings"
+rename systemsettings.desktop           "Settings"         "Settings"
+rename org.kde.kinfocenter.desktop      "About This PC"    "Hardware and system details"
+rename org.kde.khelpcenter.desktop      "Help"             "Help"
+# Settings pages that name the project behind them
+rename kcm_kwallet5.desktop             "Saved Passwords"
+rename kcm_desktoptheme.desktop         "Taskbar Style"
+rename kcm_krunnersettings.desktop      "Search Bar"
+rename kcm_kwin_scripts.desktop         "Window Scripts"
+rename kcm_plasmasearch.desktop         "Search"
+rename kcm_qtquicksettings.desktop      "Graphics Renderer"
+
+### No KDE feedback page
+# The User Feedback page sends usage data to KDE. OneClick collects nothing, so the page and the
+# feedback prompts are removed and the setting is pinned off.
+rm -f /usr/share/applications/kcm_feedback.desktop \
+      /usr/lib64/qt6/plugins/plasma/kcms/systemsettings/kcm_feedback.so
+setcfg PlasmaUserFeedback Global FeedbackLevel 0
+kwriteconfig6 --file /etc/xdg/PlasmaUserFeedback --group UserFeedback --key Enabled false
+
+### Terminal: our colours
+mkdir -p /usr/share/konsole
+cat > /usr/share/konsole/OneClick.colorscheme <<'COLORS'
+[General]
+Description=OneClick
+Opacity=1
+Wallpaper=
+
+[Background]
+Color=10,16,32
+[BackgroundIntense]
+Color=14,24,48
+[Foreground]
+Color=226,232,240
+[ForegroundIntense]
+Color=255,255,255
+[Color0]
+Color=30,41,59
+[Color0Intense]
+Color=71,85,105
+[Color1]
+Color=248,113,113
+[Color1Intense]
+Color=252,165,165
+[Color2]
+Color=45,212,191
+[Color2Intense]
+Color=94,234,212
+[Color3]
+Color=250,204,21
+[Color3Intense]
+Color=253,224,71
+[Color4]
+Color=96,165,250
+[Color4Intense]
+Color=147,197,253
+[Color5]
+Color=192,132,252
+[Color5Intense]
+Color=216,180,254
+[Color6]
+Color=34,211,238
+[Color6Intense]
+Color=103,232,249
+[Color7]
+Color=203,213,225
+[Color7Intense]
+Color=248,250,252
+COLORS
+cat > /usr/share/konsole/OneClick.profile <<'PROFILE'
+[Appearance]
+ColorScheme=OneClick
+Font=Monospace,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+
+[General]
+Name=OneClick
+Parent=FALLBACK/
+
+[Scrolling]
+HistoryMode=2
+PROFILE
+setcfg konsolerc "Desktop Entry" DefaultProfile OneClick.profile
+# Our own welcome line instead of the base system's.
+echo "Welcome to ${BRAND_NAME}." > /etc/motd
+
+### Cloud gaming shortcuts (for games whose anti-cheat blocks Linux)
+mkdir -p /usr/share/oneclick
+for game in "GeForce NOW|https://play.geforcenow.com|nvidia" "Xbox Cloud Gaming|https://www.xbox.com/play|xbox"; do
+    IFS='|' read -r name url key <<< "${game}"
+    cat > "/usr/share/applications/oneclick-cloud-${key}.desktop" <<DESKTOP
+[Desktop Entry]
+Type=Application
+Name=${name}
+Comment=Play games in the cloud, including ones that do not run on Linux
+Exec=xdg-open ${url}
+Icon=oneclick-cloud-gaming
+Categories=Game;
+Keywords=fortnite;cloud;stream;games;
+DESKTOP
+done
+
+### Boot menu: hidden on a PC with only OneClick, shown when another system is installed
+cat > /usr/libexec/oneclick-boot-menu <<'BOOTMENU'
+#!/usr/bin/bash
+# Hides the start-up menu only when OneClick is the only system on the PC.
+# On a dual-boot PC the menu stays so the person can pick Windows or OneClick.
+if os-prober 2>/dev/null | grep -q . || efibootmgr 2>/dev/null | grep -qi -E "windows|ubuntu|mint|debian|opensuse|arch"; then
+    grub2-editenv - unset menu_auto_hide
+else
+    grub2-editenv - set menu_auto_hide=1
+fi
+BOOTMENU
+chmod 755 /usr/libexec/oneclick-boot-menu
+sed -i 's|^ExecStart=.*|ExecStart=/usr/libexec/oneclick-boot-menu|' /usr/lib/systemd/system/oneclick-hide-boot-menu.service

@@ -1,12 +1,9 @@
 [Unit]
-Description=Hide the text boot menu on normal starts
-ConditionPathExists=!/var/lib/oneclick/boot-menu-hidden
+Description=Show the boot menu only on PCs with more than one system
 
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/grub2-editenv - set menu_auto_hide=1
-ExecStartPost=/usr/bin/mkdir -p /var/lib/oneclick
-ExecStartPost=/usr/bin/touch /var/lib/oneclick/boot-menu-hidden
 
 [Install]
 WantedBy=multi-user.target
