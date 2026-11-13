@@ -281,3 +281,10 @@ fi
 dnf5 remove -y plasma-discover-rpm-ostree || true
 # The stock "Software Update" page goes too; ours replaces it.
 rm -f /usr/share/applications/kcm_updates.desktop /usr/lib64/qt6/plugins/plasma/kcms/systemsettings/kcm_updates.so
+
+### Home-screen corner
+# Resting the pointer in the bottom-right corner for a second shows the home screen (desktop),
+# where the taskbar is always visible. A safety net for when the taskbar is hidden.
+setcfg kwinrc ElectricBorders BottomRight ShowDesktop
+setcfg kwinrc Windows ElectricBorderDelay 1000
+setcfg kwinrc Windows ElectricBorderCooldown 800

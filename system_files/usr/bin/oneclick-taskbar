@@ -13,8 +13,8 @@ on() { [[ "$1" == "$2" ]] && echo on || echo off; }
 size=medium; (( height <= 38 )) && size=small; (( height >= 56 )) && size=large
 
 choice=$(kdialog --title "$TITLE" --separate-output --checklist "Choose how the taskbar behaves:" \
-    autohide  "Hide automatically (slides back when the pointer reaches the edge)" "$(on "$hiding" autohide)" \
-    dodge     "Move out of the way of windows that touch it"                       "$(on "$hiding" dodgewindows)" \
+    dodge     "Hide automatically while an app covers it (always shown on the home screen)" "$(on "$hiding" dodgewindows)" \
+    autohide  "Always hidden until the pointer reaches the edge"                     "$(on "$hiding" autohide)" \
     floating  "Floating (a rounded bar with a gap around it)"                      "$(on "$floating" true)" \
     top       "Show at the top of the screen"                                      "$(on "$location" top)" \
     small     "Small"                                                               "$(on "$size" small)" \
