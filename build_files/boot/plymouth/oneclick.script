@@ -1,0 +1,71 @@
+# OneClick start-up animation. Plays the frames once at 30 frames a second, then holds the
+# finished word until the desktop is ready. Also draws the password prompt for encrypted disks.
+
+FRAMES = 116;
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
+
+for (i = 0; i < FRAMES; i++) {
+    name = "" + i;
+    if (i < 100) name = "0" + name;
+    if (i < 10) name = "0" + name;
+    frame[i] = Image("frame-" + name + ".png");
+}
+
+# Never wider than 60% of the screen, so it fits small displays.
+scale = 1;
+max_width = Window.GetWidth() * 0.6;
+if (frame[0].GetWidth() > max_width) scale = max_width / frame[0].GetWidth();
+width = frame[0].GetWidth() * scale;
+height = frame[0].GetHeight() * scale;
+if (scale != 1) {
+    for (i = 0; i < FRAMES; i++) frame[i] = frame[i].Scale(width, height);
+}
+
+word = Sprite();
+word.SetX(Window.GetX() + Window.GetWidth() / 2 - width / 2);
+word.SetY(Window.GetY() + Window.GetHeight() / 2 - height / 2);
+
+tick = 0;
+fun refresh() {
+    # Plymouth calls this 50 times a second; the animation was drawn at 30.
+    index = Math.Int(tick * 0.6);
+    if (index >= FRAMES) index = FRAMES - 1;
+    word.SetImage(frame[index]);
+    tick++;
+}
+Plymouth.SetRefreshFunction(refresh);
+
+# ---- password prompt (encrypted disks) ----
+prompt_sprite = Sprite();
+bullets_sprite = Sprite();
+fun show_password(prompt, bullets) {
+    text = Image.Text(prompt, 1, 1, 1);
+    prompt_sprite.SetImage(text);
+    prompt_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - text.GetWidth() / 2);
+    prompt_sprite.SetY(word.GetY() + height + 40);
+    dots = "";
+    for (i = 0; i < bullets; i++) dots += "* ";
+    dots_image = Image.Text(dots, 0.18, 0.83, 0.75);
+    bullets_sprite.SetImage(dots_image);
+    bullets_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - dots_image.GetWidth() / 2);
+    bullets_sprite.SetY(prompt_sprite.GetY() + text.GetHeight() + 14);
+    prompt_sprite.SetOpacity(1);
+    bullets_sprite.SetOpacity(1);
+}
+fun hide_password() {
+    prompt_sprite.SetOpacity(0);
+    bullets_sprite.SetOpacity(0);
+}
+Plymouth.SetDisplayPasswordFunction(show_password);
+Plymouth.SetDisplayNormalFunction(hide_password);
+
+# ---- messages (for example "Installing updates") ----
+message_sprite = Sprite();
+fun show_message(text) {
+    image = Image.Text(text, 0.8, 0.84, 0.88);
+    message_sprite.SetImage(image);
+    message_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - image.GetWidth() / 2);
+    message_sprite.SetY(Window.GetY() + Window.GetHeight() * 0.86);
+}
+Plymouth.SetMessageFunction(show_message);

@@ -38,23 +38,4 @@ def svg(body, background=None):
 os.makedirs("system_files/usr/share/oneclick", exist_ok=True)
 open("system_files/usr/share/oneclick/wordmark.svg", "w").write(svg(mark()))
 
-# 2. Boot animation: ring draws, dot pops, letters fade in, hold, fade out
-if "--frames" in sys.argv:
-    tmp = tempfile.mkdtemp(); N = 60; out_w = 560; out_h = round(out_w * H / W)
-    for i in range(N):
-        t = i / N
-        draw = min(1, t / 0.35); draw = draw * draw * (3 - 2 * draw)
-        dot = 0 if t < 0.35 else min(1, (t - 0.35) / 0.08)
-        letters = 0 if t < 0.40 else min(1, (t - 0.40) / 0.15)
-        fade = 1 if t < 0.88 else 1 - (t - 0.88) / 0.12
-        square = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {W}"><rect x="-20" y="-20" width="{W+40}" height="{W+40}" fill="#000"/>'
-                  f'<g transform="translate(0,{(W - H) / 2 + 12})">{mark(draw, dot, letters, fade)}</g></svg>')
-        open(f"{tmp}/throbber-{i+1:04d}.svg", "w").write(square)
-    subprocess.run(f'qlmanage -t -s {out_w} -o {tmp} {tmp}/*.svg >/dev/null 2>&1', shell=True)
-    dest = "build_files/boot/plymouth"
-    for i in range(N):
-        name = f"throbber-{i+1:04d}"
-        subprocess.run(["sips", "-c", str(out_h), str(out_w), f"{tmp}/{name}.svg.png", "--out", f"{dest}/{name}.png"],
-                       stdout=subprocess.DEVNULL)
-    shutil.rmtree(tmp)
-    print("frames:", N, f"{out_w}x{out_h}")
+# The boot animation frames are made by design/make_boot_animation.py.
