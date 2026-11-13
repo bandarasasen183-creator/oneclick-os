@@ -1,20 +1,29 @@
-
-/* ---------- hand-drawn wordmark with the bouncing i-dot ---------- */
+/* ---------- colour mode: follows the device until the person chooses ---------- */
 (function () {
-  const strokes = [...document.querySelectorAll('svg.word path.s')];
-  if (!strokes.length) return;
-  const odot = document.getElementById('odot');
-  const idot = document.getElementById('idot');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const WRITE = 1.75;                       // seconds to write the word
+  let saved = null; try { saved = localStorage.getItem('oneclick-theme'); } catch (e) {}
+  const apply = t => { document.documentElement.dataset.theme = t;
+    document.querySelectorAll('img[data-wordmark]').forEach(i => i.src = 'assets/wordmark-' + (t === 'light' ? 'light' : 'dark') + '.svg'); };
+  const current = () => saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  apply(current());
+  document.addEventListener('DOMContentLoaded', () => {
+    apply(current());
+    const b = document.getElementById('theme');
+    if (b) b.onclick = () => { saved = current() === 'light' ? 'dark' : 'light'; try { localStorage.setItem('oneclick-theme', saved); } catch (e) {} apply(saved); };
+  });
+})();
+
+/* ---------- writes the OneClick wordmark by hand, then drops the dot onto the i ---------- */
+window.OneClickWrite = function (svg, onDone) {
+  const strokes = [...svg.querySelectorAll('path[data-w]')];
+  const odot = svg.querySelector('.o'), idot = svg.querySelector('.i');
+  const WRITE = 1.75;
   const total = strokes.reduce((a, s) => a + +s.dataset.w, 0);
   let acc = 0;
   const timing = strokes.map(s => { const a = acc / total * WRITE; acc += +s.dataset.w; return [a, acc / total * WRITE]; });
   strokes.forEach(s => { const L = s.getTotalLength(); s.style.strokeDasharray = L; s.style.strokeDashoffset = L; s.dataset.len = L; });
   const ease = p => p * p * (3 - 2 * p);
-
-  // the i-dot: fades in out of the dark above the i, drops, squashes on landing, bounces twice
-  const G = 2600, X = 766, REST = 72, START = -40, BOUNCE = 0.42, T0 = WRITE + 0.12;
+  // the i-dot fades in out of the dark above the i, drops, squashes on landing, bounces twice
+  const G = 2600, REST = 72, START = -40, BOUNCE = 0.42, T0 = WRITE + 0.12;
   const samples = (() => { const out = []; let y = START, v = 0, hits = 0;
     for (let t = 0; t < 1.6; t += 1 / 240) { v += G / 240; y += v / 240; let sq = 0;
       if (y >= REST && v > 0) { y = REST; hits++; sq = Math.min(0.32, v / 2600); v = hits < 3 ? -v * BOUNCE : 0; }
@@ -26,29 +35,23 @@
     return [samples[i][0], sq, Math.min(1, t / 0.14)];
   }
   function draw(t) {
-    strokes.forEach((s, i) => {
-      const [a, b] = timing[i];
-      const p = t <= a ? 0 : ease(Math.min(1, (t - a) / (b - a)));
-      s.style.strokeDashoffset = s.dataset.len * (1 - p);
-    });
+    strokes.forEach((s, i) => { const [a, b] = timing[i]; const p = t <= a ? 0 : ease(Math.min(1, (t - a) / (b - a))); s.style.strokeDashoffset = s.dataset.len * (1 - p); });
     const q = Math.max(0, Math.min(1, (t - timing[0][1]) / 0.16));
     odot.setAttribute('r', 17 * q * (1.3 - 0.3 * q));
     const d = dot(t);
     if (d) { const g = 0.6 + 0.4 * d[2], rx = 15 * (1 + d[1]) * g, ry = 15 * (1 - d[1]) * g;
       idot.setAttribute('rx', rx); idot.setAttribute('ry', ry); idot.setAttribute('cy', d[0] + 15 - ry); idot.setAttribute('opacity', d[2]); }
   }
-
-  if (reduce) { draw(99); return; }
-  let start = null;
-  const end = T0 + 1.3;
-  function frame(now) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { draw(99); onDone && onDone(); return; }
+  let start = null; const end = T0 + 1.3;
+  requestAnimationFrame(function frame(now) {
     if (start === null) start = now;
-    const t = (now - start) / 1000 - 0.35;   // short pause before writing begins
+    const t = (now - start) / 1000 - 0.35;
     draw(Math.max(0, t));
-    if (t < end) requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-})();
+    if (t < end) requestAnimationFrame(frame); else onDone && onDone();
+  });
+};
+(function () { const hero = document.querySelector('svg.word'); if (hero) window.OneClickWrite(hero); })();
 
 /* ---------- reveal on scroll ---------- */
 (function () {

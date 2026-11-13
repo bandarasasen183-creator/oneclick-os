@@ -7,34 +7,35 @@
 <meta name="description" content="A free desktop system for people leaving Windows. Installs in one go, works without the terminal, and never pushes an update on you.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cpath d='M74 66 A76 76 0 1 0 166 66' fill='none' stroke='%232dd4bf' stroke-width='26' stroke-linecap='round'/%3E%3Ccircle cx='120' cy='52' r='17' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/demo.css">
 </head>
 <body>
 <div class="devbar">Early test version, still being built. Expect bugs. <a href="test-version.html">Read this before installing</a></div>
 <header class="top">
   <div class="wrap">
-    <a href="index.html" class="brand"><img src="assets/wordmark-dark.svg" alt="OneClick OS"></a>
+    <a href="index.html" class="brand"><img data-wordmark src="assets/wordmark-dark.svg" alt="OneClick OS"></a>
     <nav><a href="why.html">Why OneClick</a><a href="features.html">Features</a><a href="apps.html">Apps</a><a href="download.html">Download</a></nav>
+    <button id="theme" aria-label="Switch between light and dark"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.400 1.400M17.7 17.7l1.400 1.400M4.9 19.1l1.400-1.400M17.7 6.3l1.400-1.400"/></svg></button>
   </div>
 </header>
 <main>
   <div class="hero wrap">
-    <div class="tile" aria-hidden="true"><img src="assets/logo.svg" alt=""></div>
     <svg class="word" viewBox="0 -60 1060 290" aria-label="OneClick" role="img">
       <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path class="s" d="M74 72.5 A76 76 0 1 0 166 72.5" stroke="#2dd4bf" stroke-width="26" data-w="3.0"/>
-        <path class="s" d="M250 116 V209" stroke="#fff" stroke-width="24" data-w="0.7"/>
-        <path class="s" d="M250 163 A38 38 0 0 1 326 163 V209" stroke="#fff" stroke-width="24" data-w="1.1"/>
-        <path class="s" d="M368 163 H460 A46 46 0 1 0 446.5 195.5" stroke="#fff" stroke-width="24" data-w="2.0"/>
-        <path class="s" d="M648.2 84.1 A76 76 0 1 0 648.2 181.9" stroke="#fff" stroke-width="24" data-w="2.3"/>
-        <path class="s" d="M712 57 V209" stroke="#fff" stroke-width="24" data-w="0.9"/>
-        <path class="s" d="M766 116 V209" stroke="#fff" stroke-width="24" data-w="0.7"/>
-        <path class="s" d="M895.2 133.4 A46 46 0 1 0 895.2 192.6" stroke="#fff" stroke-width="24" data-w="1.5"/>
-        <path class="s" d="M958 57 V209" stroke="#fff" stroke-width="24" data-w="0.9"/>
-        <path class="s" d="M1012 116 L958 168" stroke="#fff" stroke-width="24" data-w="0.5"/>
-        <path class="s" d="M979 148 L1016 209" stroke="#fff" stroke-width="24" data-w="0.5"/>
+        <path d="M74 72.5 A76 76 0 1 0 166 72.5" stroke="#2dd4bf" stroke-width="26" data-w="3.0"/>
+        <path d="M250 116 V209" stroke="#fff" stroke-width="24" data-w="0.7"/>
+        <path d="M250 163 A38 38 0 0 1 326 163 V209" stroke="#fff" stroke-width="24" data-w="1.1"/>
+        <path d="M368 163 H460 A46 46 0 1 0 446.5 195.5" stroke="#fff" stroke-width="24" data-w="2.0"/>
+        <path d="M648.2 84.1 A76 76 0 1 0 648.2 181.9" stroke="#fff" stroke-width="24" data-w="2.3"/>
+        <path d="M712 57 V209" stroke="#fff" stroke-width="24" data-w="0.9"/>
+        <path d="M766 116 V209" stroke="#fff" stroke-width="24" data-w="0.7"/>
+        <path d="M895.2 133.4 A46 46 0 1 0 895.2 192.6" stroke="#fff" stroke-width="24" data-w="1.5"/>
+        <path d="M958 57 V209" stroke="#fff" stroke-width="24" data-w="0.9"/>
+        <path d="M1012 116 L958 168" stroke="#fff" stroke-width="24" data-w="0.5"/>
+        <path d="M979 148 L1016 209" stroke="#fff" stroke-width="24" data-w="0.5"/>
       </g>
-      <circle id="odot" cx="120" cy="58.5" r="0" fill="#fff"/>
-      <ellipse id="idot" cx="766" cy="-40" rx="15" ry="15" fill="#2dd4bf" opacity="0"/>
+      <circle class="o" cx="120" cy="58.5" r="0" fill="#fff"/>
+      <ellipse class="i" cx="766" cy="-40" rx="15" ry="15" fill="#2dd4bf" opacity="0"/>
     </svg>
 
     <h1>A computer that just works, without Windows.</h1>
@@ -45,13 +46,23 @@
     </div>
     <p class="note">Free. No account. Installs next to Windows if you want to keep it.</p>
 
-    <figure class="shot reveal">
-      <img src="assets/desktop.jpg" alt="The OneClick desktop with the Settings app open" width="1800" height="1125">
-    </figure>
-    <p class="caption">This is what it looks like. Settings, open on a fresh install.</p>
+    <div class="demo" id="demo"></div>
+    <p class="caption">A working model of the desktop. Open the start menu, drag windows around, change the taskbar in Settings, or run an update.</p>
   </div>
 
 
+  <section style="padding-bottom:0">
+    <div class="wrap">
+      <h2>Where it's at right now</h2>
+      <p class="intro">We'd rather tell you than have you find out.</p>
+      <div class="status">
+        <div><b>Working</b><span>The desktop, our icons and window buttons, the taskbar options, the start-up animation, plain app names, updates you can undo.</span></div>
+        <div><b>Being built</b><span>The Update page in Settings, our own start menu, the installer for real PCs, installing the apps you pick on first start.</span></div>
+        <div><b>Not started</b><span>Moving your files and settings across from Windows, the "will my games work" check, a macOS-style look.</span></div>
+        <div><b>Tested on</b><span>One virtual machine so far. No real PCs yet.</span></div>
+      </div>
+    </div>
+  </section>
   <section>
     <div class="wrap teasers">
       <a class="teaser reveal" href="why.html"><h3>Why OneClick</h3><p>The things people complain about on other systems, and what we did about each one. Including what we can't fix.</p><span>Read the list</span></a>
@@ -68,5 +79,6 @@
   </div>
 </footer>
 <script src="assets/site.js"></script>
+<script src="assets/demo.js"></script>
 </body>
 </html>

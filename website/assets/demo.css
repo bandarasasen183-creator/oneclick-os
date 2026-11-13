@@ -1,0 +1,84 @@
+/* The interactive desktop on the home page. It always looks like the real system (dark),
+   whichever colour mode the website is in. */
+.demo { position: relative; max-width: 1000px; margin: 64px auto 0; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--line); background: #0a1020; color: #e8ecf3; user-select: none; text-align: left; font-size: 14px; }
+.demo .wall { position: absolute; inset: 0; background: #0a1020; overflow: hidden; }
+.demo .wall::before { content: ""; position: absolute; right: -8%; bottom: -45%; width: 58%; aspect-ratio: 1; border-radius: 50%; background: #0e1830; box-shadow: inset 0 0 0 9vw #122040; }
+.demo .wall::after { content: ""; position: absolute; left: -6%; top: -40%; width: 40%; aspect-ratio: 1; border-radius: 50%; background: #0c1428; }
+.demo .wall img { position: absolute; left: 50%; top: 42%; width: 13%; transform: translate(-50%, -50%); }
+.demo .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 46px; background: #0d1528; border-top: 1px solid #1c2740; display: flex; align-items: center; padding: 0 8px; gap: 4px; z-index: 900; transition: transform .3s ease, left .3s, right .3s, bottom .3s, border-radius .3s; }
+.demo.floating .bar { left: 10px; right: 10px; bottom: 8px; border-radius: 12px; border: 1px solid #1c2740; }
+.demo.hide .bar { transform: translateY(120%); }
+.demo.hide:has(.bar:hover) .bar, .demo.hide .edge:hover ~ .bar, .demo.hide.home .bar { transform: none; }
+.demo .edge { position: absolute; left: 0; right: 0; bottom: 0; height: 8px; z-index: 899; }
+.demo .tb { width: 40px; height: 36px; border-radius: 7px; display: grid; place-items: center; cursor: pointer; position: relative; border: 0; background: none; padding: 0; }
+.demo .tb:hover { background: rgba(255,255,255,.08); }
+.demo .tb img { width: 24px; height: 24px; transition: transform .12s; }
+.demo .tb:active img { transform: scale(.85); }
+.demo .tb.open::after { content: ""; position: absolute; bottom: 1px; left: 13px; right: 13px; height: 3px; border-radius: 2px; background: #2dd4bf; }
+.demo .tray { margin-left: auto; display: flex; align-items: center; gap: 12px; padding-right: 6px; }
+.demo .tray img { width: 18px; height: 18px; }
+.demo .clock { text-align: right; line-height: 1.15; font-size: 12px; }
+.demo .corner { width: 10px; align-self: stretch; margin-left: 4px; border-left: 1px solid #1c2740; cursor: pointer; }
+.demo .corner:hover { background: rgba(255,255,255,.08); }
+
+.demo .menu { position: absolute; left: 8px; bottom: 54px; width: 380px; max-width: calc(100% - 16px); background: #101a31; border: 1px solid #22304d; border-radius: 12px; padding: 14px; z-index: 950;
+  opacity: 0; transform: translateY(14px) scale(.97); pointer-events: none; transition: opacity .16s, transform .2s cubic-bezier(.2,.8,.2,1); }
+.demo .menu.show { opacity: 1; transform: none; pointer-events: auto; }
+.demo .menu input { width: 100%; background: #0a1020; border: 1.5px solid #22304d; border-radius: 999px; color: inherit; padding: 8px 14px; font: inherit; outline: none; user-select: text; }
+.demo .menu input:focus { border-color: #2dd4bf; }
+.demo .menu h4 { margin: 14px 4px 6px; font-size: 12px; font-weight: 600; color: #8a97ae; }
+.demo .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+.demo .tile-app { border-radius: 8px; padding: 10px 4px; text-align: center; cursor: pointer; font-size: 12px; }
+.demo .tile-app:hover { background: rgba(255,255,255,.07); }
+.demo .tile-app img { width: 34px; height: 34px; display: block; margin: 0 auto 6px; }
+.demo .power { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; border-top: 1px solid #22304d; padding-top: 10px; }
+.demo .power button { background: none; border: 1px solid #22304d; color: inherit; border-radius: 8px; padding: 6px 12px; cursor: pointer; font: inherit; font-size: 12px; }
+.demo .power button:hover { border-color: #8a97ae; }
+
+.demo .win { position: absolute; background: #0b1224; border: 1px solid #22304d; border-radius: 6px; display: flex; flex-direction: column; overflow: hidden; min-width: 280px; min-height: 180px;
+  animation: winin .22s cubic-bezier(.2,.8,.2,1); box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+.demo .win.closing { animation: winout .16s ease forwards; }
+.demo .win.mini { animation: winmini .22s ease forwards; }
+.demo .win.max { left: 0 !important; top: 0 !important; width: 100% !important; height: calc(100% - 46px) !important; border-radius: 0; }
+@keyframes winin { from { opacity: 0; transform: scale(.92) translateY(10px); } }
+@keyframes winout { to { opacity: 0; transform: scale(.94); } }
+@keyframes winmini { to { opacity: 0; transform: translateY(60%) scale(.5); } }
+.demo .title { height: 32px; display: flex; align-items: center; padding-left: 10px; gap: 8px; cursor: grab; flex: none; }
+.demo .title:active { cursor: grabbing; }
+.demo .title img { width: 16px; height: 16px; }
+.demo .title span { flex: 1; font-size: 13px; }
+.demo .wb { width: 44px; height: 32px; border: 0; background: none; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.demo .wb:hover { background: rgba(255,255,255,.1); }
+.demo .wb.x:hover { background: #e81123; }
+.demo .wb svg { width: 10px; height: 10px; stroke: #fff; fill: none; stroke-width: 1.1; }
+.demo .body { flex: 1; overflow: auto; border-top: 1px solid #1a2540; background: #070c1a; }
+.demo .split { display: grid; grid-template-columns: 150px 1fr; height: 100%; }
+.demo .side { background: #0b1224; padding: 8px; border-right: 1px solid #1a2540; }
+.demo .side div { padding: 7px 10px; border-radius: 6px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.demo .side div:hover { background: rgba(255,255,255,.06); }
+.demo .side div.on { background: #1f9c8f; }
+.demo .side img { width: 18px; height: 18px; }
+.demo .pane { padding: 16px; }
+.demo .files { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; }
+.demo .file { text-align: center; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+.demo .file:hover { background: rgba(255,255,255,.06); }
+.demo .file img { width: 40px; height: 40px; display: block; margin: 0 auto 6px; }
+.demo .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #1a2540; }
+.demo .row small { display: block; color: #8a97ae; }
+.demo .sw { width: 40px; height: 22px; border-radius: 11px; background: #22304d; position: relative; cursor: pointer; flex: none; transition: background .15s; border: 0; }
+.demo .sw::after { content: ""; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .18s cubic-bezier(.3,1.4,.5,1); }
+.demo .sw.on { background: #2dd4bf; }
+.demo .sw.on::after { transform: translateX(18px); }
+.demo .dbtn { background: #2dd4bf; color: #0b3b36; border: 0; border-radius: 8px; padding: 8px 14px; font: 600 13px inherit; cursor: pointer; }
+.demo .dbtn.alt { background: none; color: inherit; box-shadow: inset 0 0 0 1px #22304d; }
+.demo .prog { height: 8px; border-radius: 4px; background: #1a2540; overflow: hidden; margin: 14px 0 8px; }
+.demo .prog i { display: block; height: 100%; width: 0; background: #2dd4bf; border-radius: 4px; transition: width .25s linear; }
+.demo textarea { width: 100%; height: 100%; background: #070c1a; color: #e8ecf3; border: 0; padding: 14px; font: 14px/1.5 ui-monospace, Menlo, monospace; resize: none; outline: none; user-select: text; }
+.demo .swatches { display: flex; gap: 8px; }
+.demo .swatches button { width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+.demo .swatches button.on { border-color: #fff; }
+.demo .boot { position: absolute; inset: 0; background: #000; z-index: 2000; display: grid; place-items: center; }
+.demo .boot svg { width: 46%; overflow: visible; }
+.demo .hint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: #2dd4bf; color: #0b3b36; font-weight: 600; font-size: 13px; padding: 6px 14px; border-radius: 999px; z-index: 800; transition: opacity .4s; pointer-events: none; }
+@media (max-width: 700px) { .demo { aspect-ratio: 3 / 4; } .demo .split { grid-template-columns: 110px 1fr; } }
