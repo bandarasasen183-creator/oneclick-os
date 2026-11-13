@@ -1,0 +1,15 @@
+{
+    "KPlugin": {
+        "Id": "org.oneclick.startmenu",
+        "Name": "OneClick Start",
+        "Description": "The OneClick start menu: search, pinned apps, all apps and power",
+        "Icon": "start-here",
+        "Authors": [ { "Name": "OneClick OS" } ],
+        "Category": "Application Launchers",
+        "License": "Apache-2.0",
+        "Version": "0.1"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-Provides": [ "org.kde.plasma.launchermenu" ]
+}

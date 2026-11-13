@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0">
+  <kcfgfile name=""/>
+  <group name="General">
+    <entry name="pinned" type="StringList">
+      <default>preferred://browser,org.kde.dolphin.desktop,org.kde.discover.desktop,systemsettings.desktop,org.kde.kwrite.desktop,org.kde.konsole.desktop,org.kde.spectacle.desktop,oneclick-update.desktop,oneclick-taskbar.desktop,oneclick-cloud-nvidia.desktop,oneclick-cloud-xbox.desktop,org.kde.plasma-systemmonitor.desktop</default>
+    </entry>
+  </group>
+</kcfg>
