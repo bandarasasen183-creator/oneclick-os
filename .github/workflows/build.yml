@@ -6,6 +6,8 @@ on:
     paths-ignore:
       - '**.md'
       - 'mac/**'
+      - 'website/**'
+      - 'design/**'
       - 'disk_config/**'
   schedule:
     - cron: '05 10 * * *' # daily, to pick up the base image's updates
