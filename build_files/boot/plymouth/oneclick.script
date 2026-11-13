@@ -1,7 +1,7 @@
 # OneClick start-up animation. Plays the frames once at 30 frames a second, then holds the
 # finished word until the desktop is ready. Also draws the password prompt for encrypted disks.
 
-FRAMES = 116;
+FRAMES = 94;
 Window.SetBackgroundTopColor(0, 0, 0);
 Window.SetBackgroundBottomColor(0, 0, 0);
 

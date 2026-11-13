@@ -2,8 +2,8 @@
 """Renders the start-up animation frames. Run from the repo root on a Mac.
 
 The word OneClick is drawn stroke by stroke, like handwriting. The logo's white dot pops in
-when the ring closes. The dot of the i is not drawn: it falls from above, bounces off the top
-of the k, arcs across to the i, bounces there, and settles in its place."""
+when the ring closes. The dot of the i is not drawn: it drops straight onto the i, squashes
+as it lands, bounces twice, each time lower, and settles."""
 import math, os, shutil, subprocess, tempfile
 
 FPS = 30
@@ -31,33 +31,36 @@ ends = starts[1:] + [WRITE_TIME]
 
 def ease(p): return p * p * (3 - 2 * p)
 
-# ---- the i-dot's flight -------------------------------------------------------------
-G = 1555.0                          # gravity, px/s^2
-K_X, K_Y = 958.0, 30.0              # resting on top of the k
-I_X, I_Y, I_REST = 766.0, 89.0, 72.0   # touching the top of the i, and its final place
-T_FALL, T_ARC, T_HOP, T_SETTLE = 0.30, 0.42, 0.424, 0.70
-T0 = WRITE_TIME + 0.10
+# ---- the i-dot: drops straight onto the i, bounces twice (each lower), squashes as it lands ---
+G = 2600.0                          # gravity, px/s^2
+REST_Y, START_Y, X = 72.0, -40.0, 766.0   # starts inside the frame, out of the dark
+BOUNCE = 0.42                       # each bounce keeps 42% of the speed
+T0 = WRITE_TIME + 0.12
+
+def _simulate():
+    """Steps the fall once and returns a list of (t, y, squash) samples at 240 per second."""
+    out, t, y, v, dt, hits = [], 0.0, START_Y, 0.0, 1 / 240, 0
+    while t < 1.6:
+        v += G * dt; y += v * dt
+        squash = 0.0
+        if y >= REST_Y and v > 0:
+            y = REST_Y; hits += 1
+            squash = min(0.32, v / 2600)            # harder landing, flatter dot
+            v = -v * BOUNCE if hits < 3 else 0.0
+        out.append((t, y, squash)); t += dt
+    return out
+_SAMPLES = _simulate()
 
 def dot_position(t):
-    """Returns (x, y, squash) of the i-dot at time t, or None before it appears."""
     t -= T0
     if t < 0:
         return None
-    if t < T_FALL:                                    # falls onto the k
-        return K_X, K_Y - 0.5 * G * T_FALL ** 2 + 0.5 * G * t ** 2, 0
-    t -= T_FALL
-    if t < T_ARC:                                     # bounces off the k, arcs over to the i
-        vy = (I_Y - K_Y - 0.5 * G * T_ARC ** 2) / T_ARC
-        return K_X + (I_X - K_X) * t / T_ARC, K_Y + vy * t + 0.5 * G * t * t, 0
-    t -= T_ARC
-    if t < T_HOP:                                     # bounces on the i
-        vy = -0.5 * G * T_HOP
-        return I_X, I_Y + vy * t + 0.5 * G * t * t, 0
-    t -= T_HOP
-    t = min(t, T_SETTLE)                              # one last small hop, then it floats to rest
-    return I_X, I_REST + (I_Y - I_REST) * math.exp(-6.5 * t) * math.cos(17 * t), 0
+    i = min(int(t * 240), len(_SAMPLES) - 1)
+    # squash lingers for 0.08s after an impact
+    sq = max((s for (tt, _, s) in _SAMPLES[max(0, i - 19):i + 1]), default=0)
+    return X, _SAMPLES[i][1], sq
 
-DURATION = T0 + T_FALL + T_ARC + T_HOP + T_SETTLE + 0.15
+DURATION = T0 + 1.25
 N = math.ceil(DURATION * FPS)
 
 def frame(t):
@@ -74,7 +77,10 @@ def frame(t):
         parts.append(f'<circle cx="120" cy="58.5" r="{17 * q * (1.3 - 0.3 * q):.2f}" fill="{WHITE}"/>')
     pos = dot_position(t)
     if pos:
-        parts.append(f'<circle cx="{pos[0]:.1f}" cy="{pos[1]:.1f}" r="15" fill="{TEAL}"/>')
+        appear = min(1, (t - T0) / 0.14)            # fades in out of the black as it starts to fall
+        sq = pos[2]   # flatten against the i: wider, shorter, bottom stays on the line
+        rx, ry = 15 * (1 + sq), 15 * (1 - sq)
+        parts.append(f'<ellipse cx="{pos[0]:.1f}" cy="{pos[1] + 15 - ry:.1f}" rx="{rx * (0.6 + 0.4 * appear):.2f}" ry="{ry * (0.6 + 0.4 * appear):.2f}" fill="{TEAL}" opacity="{appear:.3f}"/>')
     return "".join(parts)
 
 tmp = tempfile.mkdtemp()
