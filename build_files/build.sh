@@ -34,6 +34,12 @@ sed -i \
     -e "s|^BUG_REPORT_URL=.*|BUG_REPORT_URL=\"${BRAND_URL}/issues\"|" \
     /usr/lib/os-release
 echo "${IMAGE_NAME}" > /usr/share/oneclick-variant
+mkdir -p /usr/share/oneclick
+cp /ctx/VERSION /usr/share/oneclick/version
+echo "${IMAGE_REGISTRY}/${IMAGE_NAME}" > /usr/share/oneclick/image
+
+### Our own Settings pages (compiled in the first stage of the Containerfile)
+cp -a /ctx/pages/. /
 install -Dm644 /usr/share/icons/OneClick/scalable/places/start-here.svg /usr/share/pixmaps/oneclick-logo.svg
 
 ### Welcome window (shown once after first login)
@@ -271,9 +277,7 @@ fi
 ### One updater only
 # The App Store also tried to update the system, and clashed with our Update app
 # ("System transaction in progress"). The App Store now only handles apps; system updates
-# are ours alone, and the Settings "Software Update" page opens our Update app.
+# are ours alone.
 dnf5 remove -y plasma-discover-rpm-ostree || true
-if [[ -f /usr/share/applications/kcm_updates.desktop ]]; then
-    sed -i -e 's|^Exec=.*|Exec=/usr/bin/oneclick-update|' -e 's|^Name=.*|Name=Update|' -e '/^Name\[/d' \
-        /usr/share/applications/kcm_updates.desktop
-fi
+# The stock "Software Update" page goes too; ours replaces it.
+rm -f /usr/share/applications/kcm_updates.desktop /usr/lib64/qt6/plugins/plasma/kcms/systemsettings/kcm_updates.so

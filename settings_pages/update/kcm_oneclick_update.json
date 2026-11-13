@@ -1,0 +1,10 @@
+{
+    "KPlugin": {
+        "Name": "Update",
+        "Description": "Get the newest version, security fixes, or go back to an earlier version",
+        "Icon": "oneclick-update"
+    },
+    "X-KDE-Keywords": "update,upgrade,new version,security,rollback,previous version,download",
+    "X-KDE-System-Settings-Parent-Category": "system-administration",
+    "X-KDE-Weight": 1
+}

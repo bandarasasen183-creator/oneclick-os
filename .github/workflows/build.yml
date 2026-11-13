@@ -12,15 +12,37 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
+  # A push builds the newest code only. The daily run also rebuilds every released version
+  # (git tags v0.1, v0.2, ...) on the updated base, which is how the "Security only" choice
+  # and the previous versions keep receiving security fixes without new features.
+  refs:
+    runs-on: ubuntu-26.04
+    outputs:
+      list: ${{ steps.list.outputs.list }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - id: list
+        run: |
+          refs='"main"'
+          if [[ "${{ github.event_name }}" != "push" ]]; then
+            for tag in $(git tag --list 'v[0-9]*' --sort=-v:refname | head -8); do refs="${refs},\"${tag}\""; done
+          fi
+          echo "list=[${refs}]" >> "${GITHUB_OUTPUT}"
+
   build:
-    name: ${{ matrix.image }}
+    name: ${{ matrix.image }} (${{ matrix.ref }})
+    needs: refs
     strategy:
       fail-fast: false
       matrix:
+        ref: ${{ fromJson(needs.refs.outputs.list) }}
+        image: [oneclick-os, oneclick-os-nvidia, oneclick-os-preview]
         include:
           - image: oneclick-os
             base: ghcr.io/ublue-os/bazzite:stable
@@ -41,6 +63,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ matrix.ref }}
 
       - name: Free up disk space
         if: matrix.runner == 'ubuntu-26.04'
@@ -55,6 +79,7 @@ jobs:
           sudo podman build \
             --build-arg BASE_IMAGE="${BASE}" \
             --build-arg IMAGE_NAME="${IMAGE}" \
+            --build-arg IMAGE_REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}" \
             --label org.opencontainers.image.source="https://github.com/${GITHUB_REPOSITORY}" \
             --label org.opencontainers.image.title="${IMAGE}" \
             --tag "${IMAGE}:latest" \
@@ -67,5 +92,10 @@ jobs:
         run: |
           REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"
           echo "${TOKEN}" | sudo podman login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
-          sudo podman push "${IMAGE}:latest" "${REGISTRY}/${IMAGE}:latest"
-          sudo podman push "${IMAGE}:latest" "${REGISTRY}/${IMAGE}:$(date +%Y%m%d)"
+          # Every build is published under its version number. The newest code is also "latest".
+          VERSION="$(cat VERSION 2>/dev/null || echo 0.1)"
+          sudo podman push "${IMAGE}:latest" "${REGISTRY}/${IMAGE}:${VERSION}"
+          if [[ "${{ matrix.ref }}" == "main" ]]; then
+            sudo podman push "${IMAGE}:latest" "${REGISTRY}/${IMAGE}:latest"
+            sudo podman push "${IMAGE}:latest" "${REGISTRY}/${IMAGE}:$(date +%Y%m%d)"
+          fi

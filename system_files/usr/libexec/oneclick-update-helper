@@ -1,23 +1,45 @@
 #!/usr/bin/bash
-# Runs as administrator for the Update app.
-#   check     prints STAGED (a downloaded update waits for restart), AVAILABLE or NONE
-#   download  downloads the update and queues it for the next restart
-#   rollback  queues the previous version for the next restart
+# Does the real work for the Update page in Settings.
+#   check <full|security>      prints STAGED, AVAILABLE or NONE
+#   download <full|security>   downloads the newest build for that choice, queued for next restart
+#   version <X.Y>              downloads that version (it then receives security fixes only)
+#   rollback                   queues the build this PC ran before the last update
+#   versions                   lists published versions, newest first (no administrator rights needed)
+# "full" follows the newest version. "security" stays on this PC's version, which is rebuilt
+# with security fixes but gets no new features.
 set -o pipefail
 
-staged() {
-    bootc status --json | python3 -c 'import sys,json; s=json.load(sys.stdin)["status"].get("staged"); print("yes" if s else "")'
+IMAGE=$(cat /usr/share/oneclick/image)
+VERSION=$(cat /usr/share/oneclick/version)
+
+tag_for() { [[ "$1" == "security" ]] && echo "${VERSION}" || echo "latest"; }
+status() { bootc status --json | python3 -c "import sys,json; s=json.load(sys.stdin)['status']; $1"; }
+booted_ref()    { status "print(s['booted']['image']['image']['image'])"; }
+booted_digest() { status "print(s['booted']['image']['imageDigest'])"; }
+has_staged()    { status "print('yes' if s.get('staged') else '')"; }
+remember() { mkdir -p /var/lib/oneclick && echo "$1" > /var/lib/oneclick/channel; }
+get() {  # get <tag>: upgrade in place if already following that tag, otherwise switch to it
+    if [[ "$(booted_ref)" == "${IMAGE}:$1" ]]; then bootc upgrade; else bootc switch "${IMAGE}:$1"; fi
 }
 
 case "${1:-}" in
     check)
-        if [[ -n "$(staged)" ]]; then echo STAGED; exit 0; fi
-        out=$(bootc upgrade --check 2>&1) || { echo "$out" >&2; exit 1; }
-        if grep -q -i "no changes\|no update" <<< "$out"; then echo NONE; else echo AVAILABLE; fi ;;
+        if [[ -n "$(has_staged)" ]]; then echo STAGED; exit 0; fi
+        tag=$(tag_for "${2:-full}")
+        remote=$(skopeo inspect --no-tags --format '{{.Digest}}' "docker://${IMAGE}:${tag}") || exit 1
+        if [[ "${remote}" == "$(booted_digest)" ]]; then echo NONE; else echo AVAILABLE; fi ;;
     download)
-        bootc upgrade --quiet ;;
+        get "$(tag_for "${2:-full}")" && remember "${2:-full}" ;;
+    version)
+        [[ "${2:-}" =~ ^[0-9]+\.[0-9]+$ ]] || { echo "not a version: ${2:-}" >&2; exit 2; }
+        get "$2" && remember security ;;
     rollback)
         bootc rollback ;;
+    versions)
+        skopeo list-tags "docker://${IMAGE}" | python3 -c '
+import sys, json, re
+tags = [t for t in json.load(sys.stdin)["Tags"] if re.fullmatch(r"\d+\.\d+", t)]
+print("\n".join(sorted(tags, key=lambda t: [int(p) for p in t.split(".")], reverse=True)))' ;;
     *)
-        echo "usage: $0 check|download|rollback" >&2; exit 2 ;;
+        echo "usage: $0 check|download|version|rollback|versions" >&2; exit 2 ;;
 esac
