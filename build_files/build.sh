@@ -260,3 +260,10 @@ fi
 BOOTMENU
 chmod 755 /usr/libexec/oneclick-boot-menu
 sed -i 's|^ExecStart=.*|ExecStart=/usr/libexec/oneclick-boot-menu|' /usr/lib/systemd/system/oneclick-hide-boot-menu.service
+
+### Preview only: never sleep
+# The Mac preview runs in a virtual machine, which freezes for good if the system suspends.
+# Real PCs keep normal sleep.
+if [[ "${IMAGE_NAME}" == "oneclick-os-preview" ]]; then
+    systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+fi
