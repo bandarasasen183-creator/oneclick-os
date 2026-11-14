@@ -82,3 +82,13 @@ html[data-style=story] .in .doodle path, html[data-style=story] .doodle.in path 
 html[data-style=story] .about-logo { border: 2px solid var(--line); border-radius: var(--wobble2); box-shadow: 4px 5px 0 var(--line); }
 html[data-style=story] .report input, html[data-style=story] .report textarea, html[data-style=story] .report select { border: 2px solid var(--line); border-radius: 10px 14px 9px 13px; font-family: "Inter Tight", sans-serif; }
 html[data-style=story] .chapter { margin-bottom: 2px; }
+
+@media (max-width: 760px) {
+  html[data-style=story] body { font-size: 17.5px; }
+  html[data-style=story] .hero h1, html[data-style=story] .pagehead h1 { font-size: 34px; }
+  html[data-style=story] .teaser:nth-child(odd), html[data-style=story] .teaser:nth-child(even), html[data-style=story] .teaser.reveal.in:nth-child(odd), html[data-style=story] .teaser.reveal.in:nth-child(even) { transform: none; }
+  html[data-style=story] .demo { box-shadow: 4px 5px 0 var(--line); }
+  html[data-style=story] .note-hand { font-size: 22px; right: 6% !important; top: 8px !important; }
+  html[data-style=story] .doodle { width: 70px; top: 30px !important; }
+  html[data-style=story] #menu { border: 2px solid var(--line); box-shadow: 2px 3px 0 var(--line); background: var(--ink-2); }
+}

@@ -99,3 +99,16 @@
 .demo .tb { transition: background .12s; }
 .demo .tb[title]:hover::before { content: attr(title); position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); background: #101a31; border: 1px solid #22304d; padding: 4px 9px; border-radius: 6px; font-size: 12px; white-space: nowrap; pointer-events: none; }
 @media (max-width: 700px) { .demo .dicons { display: none; } }
+
+@media (max-width: 700px) {
+  .demo { aspect-ratio: 4 / 5; font-size: 13px; }
+  .demo .tray { gap: 9px; } .demo .tray img:nth-child(1), .demo .tray img:nth-child(3) { display: none; }
+  .demo .clock { white-space: nowrap; font-size: 11px; }
+  .demo .menu { width: auto; right: 8px; }
+  .demo .tiles { grid-template-columns: repeat(3, 1fr); }
+  .demo .win { min-width: 0; }
+  .demo .split { grid-template-columns: 96px 1fr; }
+  .demo .side div { padding: 6px; font-size: 12px; gap: 5px; }
+  .demo .wall img { width: 24%; }
+  .demo .pop, .demo .toast { right: 6px; }
+}

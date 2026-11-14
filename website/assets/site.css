@@ -282,3 +282,35 @@
   .wrap.legal { max-width: var(--max); }
   .wrap.legal > * { max-width: 760px; }
   .wrap.legal > .about-logo { max-width: 760px; }
+
+  /* ---- phones ---- */
+  .pagehead { padding: 64px 24px 0; }
+  #menu { display: none; }
+  @media (max-width: 760px) {
+    .wrap { padding: 0 18px; }
+    .pagehead { padding: 40px 18px 0; }
+    header.top .wrap { gap: 10px; }
+    #theme { margin-left: auto; }
+    #menu { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 999px; background: none; border: 1.5px solid var(--line); color: var(--text); cursor: pointer; flex: none; }
+    #menu svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+    header.top nav { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--ink); border-bottom: 2px solid var(--line); flex-direction: column; gap: 0; margin: 0; padding: 6px 18px 14px; font-size: 18px; }
+    header.top.open nav { display: flex; }
+    header.top nav a { padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--text); }
+    header.top nav a:last-child { border-bottom: 0; }
+    header.top nav a[aria-current=page] { box-shadow: none; background: none; color: var(--teal); padding-bottom: 12px; }
+    header.top { position: sticky; }
+    section { padding: 56px 0; }
+    .hero { padding: 36px 0 24px; }
+    .hero svg.word { margin-bottom: 22px; }
+    .hero .ctas { flex-direction: column; align-items: stretch; }
+    .hero .ctas .btn { justify-content: center; }
+    .devbar { font-size: 13px; padding: 7px 12px; }
+    .devbar .rep { display: inline-block; }
+    .teaser { padding: 22px; }
+    .about-logo { flex-direction: column; align-items: flex-start; gap: 16px; padding: 20px; }
+    .picker .foot .btn { margin-left: 0; width: 100%; justify-content: center; }
+    .presets button { flex: 1 1 45%; }
+    footer .wrap { flex-direction: column; align-items: flex-start; }
+    .squiggle { background: none !important; padding-bottom: 0 !important; }
+    .legal h2 { font-size: 20px; margin-top: 34px; }
+  }

@@ -222,7 +222,7 @@ window.OneClickWrite = function (svg, onDone) {
     try {
       const r = await fetch('/api/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       const out = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(out.error || 'Something went wrong. Please try again.');
+      if (!r.ok) throw new Error(out.error || (r.status === 404 || r.status >= 500 ? 'Reports are not switched on yet. We are finishing the setup, please try again later.' : 'Something went wrong. Please try again.'));
       f.querySelectorAll('label, .btn, #report-note').forEach(el => el.hidden = true);
       sent.hidden = false;
       sent.innerHTML = `<h2>Thank you. Report #${out.number} is filed.</h2><p>You can follow it <a href="${out.url}">on GitHub</a>.</p><button class="btn ghost" type="button" onclick="location.reload()">Send another</button>`;
@@ -232,4 +232,11 @@ window.OneClickWrite = function (svg, onDone) {
       msg.textContent = err.message === 'Failed to fetch' ? 'Could not reach our server. Check your connection and try again.' : err.message;
     }
   });
+})();
+
+/* ---------- phone menu ---------- */
+(function () {
+  const b = document.getElementById('menu'), top = document.querySelector('header.top');
+  if (!b || !top) return;
+  b.onclick = () => { const open = top.classList.toggle('open'); b.setAttribute('aria-expanded', open); };
 })();
