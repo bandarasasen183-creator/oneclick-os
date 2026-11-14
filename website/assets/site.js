@@ -1,9 +1,16 @@
+/* ---------- look: "story" (storybook) or "classic". Open any page with ?style=classic or ?style=story to switch. ---------- */
+(function () {
+  let style = 'story';
+  try { const q = new URLSearchParams(location.search).get('style'); if (q) localStorage.setItem('oneclick-style', q); style = localStorage.getItem('oneclick-style') || style; } catch (e) {}
+  document.documentElement.dataset.style = style === 'classic' ? 'classic' : 'story';
+})();
+
 /* ---------- colour mode: follows the device until the person chooses ---------- */
 (function () {
   let saved = null; try { saved = localStorage.getItem('oneclick-theme'); } catch (e) {}
   const apply = t => { document.documentElement.dataset.theme = t;
     document.querySelectorAll('img[data-wordmark]').forEach(i => i.src = 'assets/wordmark-' + (t === 'light' ? 'light' : 'dark') + '.svg'); };
-  const current = () => saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  const current = () => saved || (document.documentElement.dataset.style === 'story' || matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
   apply(current());
   document.addEventListener('DOMContentLoaded', () => {
     apply(current());
@@ -200,4 +207,16 @@ window.OneClickWrite = function (svg, onDone) {
   if (!box) return;
   const set = () => document.querySelectorAll('.build .btn').forEach(b => b.setAttribute('aria-disabled', !box.checked));
   box.addEventListener('change', set); set();
+})();
+
+/* ---------- report form: builds an email to us with the details filled in ---------- */
+(function () {
+  const f = document.getElementById('report');
+  if (!f) return;
+  f.addEventListener('submit', e => {
+    e.preventDefault();
+    const d = new FormData(f), line = (k, label) => d.get(k) ? label + ': ' + d.get(k) + '\n' : '';
+    const body = line('kind', 'Type') + '\n' + line('what', 'What happened') + '\n' + line('expected', 'Expected') + '\n' + line('pc', 'Computer') + line('version', 'Version') + line('email', 'Reply to');
+    location.href = 'mailto:oneclick@codecraftsol.org?subject=' + encodeURIComponent('OneClick report: ' + d.get('kind')) + '&body=' + encodeURIComponent(body);
+  });
 })();

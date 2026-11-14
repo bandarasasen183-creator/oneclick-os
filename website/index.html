@@ -6,15 +6,16 @@
 <title>OneClick OS</title>
 <meta name="description" content="A free desktop system for people leaving Windows. Installs in one go, works without the terminal, and never pushes an update on you.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cpath d='M74 66 A76 76 0 1 0 166 66' fill='none' stroke='%232dd4bf' stroke-width='26' stroke-linecap='round'/%3E%3Ccircle cx='120' cy='52' r='17' fill='%23fff'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/site.css">
-<link rel="stylesheet" href="assets/demo.css">
+<link rel="stylesheet" href="assets/site.css?v=1794614600">
+<link rel="stylesheet" href="assets/story.css?v=1794614600">
+<link rel="stylesheet" href="assets/demo.css?v=1794614600">
 </head>
 <body>
-<div class="devbar">Early test version, still being built. Expect bugs. <a href="test-version.html">Read this before installing</a></div>
+<div class="devbar">Early test version, still being built. Expect bugs. <a href="test-version.html">Read this before installing</a><a class="rep" href="report.html">Report a problem</a></div>
 <header class="top">
   <div class="wrap">
     <a href="index.html" class="brand"><img data-wordmark src="assets/wordmark-dark.svg" alt="OneClick OS"></a>
-    <nav><a href="why.html">Why OneClick</a><a href="features.html">Features</a><a href="apps.html">Apps</a><a href="download.html">Download</a></nav>
+    <nav><a href="why.html">Why OneClick</a><a href="features.html">Features</a><a href="apps.html">Apps</a><a href="download.html">Download</a><a href="about.html">About</a></nav>
     <button id="theme" aria-label="Switch between light and dark"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.400 1.400M17.7 17.7l1.400 1.400M4.9 19.1l1.400-1.400M17.7 6.3l1.400-1.400"/></svg></button>
   </div>
 </header>
@@ -38,7 +39,7 @@
       <ellipse class="i" cx="766" cy="-40" rx="15" ry="15" fill="#2dd4bf" opacity="0"/>
     </svg>
 
-    <h1>A computer that just works, without Windows.</h1>
+    <h1>A computer that <span class="squiggle">just works</span>, without Windows.</h1>
     <p class="lede">A free desktop system that installs in one go, runs your games and apps, and never makes you open a terminal. Familiar from the first click.</p>
     <div class="ctas">
       <a class="btn" href="apps.html">Choose your apps and download</a>
@@ -46,14 +47,18 @@
     </div>
     <p class="note">Free. No account. Installs next to Windows if you want to keep it.</p>
 
-    <div class="demo" id="demo"></div>
+    <div style="position:relative;max-width:1000px;margin:0 auto">
+      <div class="note-hand" style="position:absolute;right:4%;top:14px;z-index:5">go on, click things</div>
+      <svg class="doodle reveal" viewBox="0 0 120 90" width="110" style="right:1%;top:44px;z-index:5"><path d="M100 6 C 104 40 80 62 30 66"/><path d="M46 52 L28 66 L48 78"/></svg>
+      <div class="demo" id="demo"></div>
+    </div>
     <p class="caption">A working model of the desktop. Open the start menu, drag windows around, change the taskbar in Settings, or run an update.</p>
   </div>
 
 
   <section style="padding-bottom:0">
     <div class="wrap">
-      <h2>Where it's at right now</h2>
+      <span class="chapter">no surprises</span><h2>Where it's at right now</h2>
       <p class="intro">We'd rather tell you than have you find out.</p>
       <div class="status">
         <div><b>Working</b><span>The desktop, our icons and window buttons, the taskbar options, the start-up animation, plain app names, updates you can undo.</span></div>
@@ -78,7 +83,7 @@
     <nav><a href="test-version.html">Test version notice</a><a href="terms.html">Terms of use</a><a href="privacy.html">Privacy policy</a></nav>
   </div>
 </footer>
-<script src="assets/site.js"></script>
-<script src="assets/demo.js"></script>
+<script src="assets/site.js?v=1794614600"></script>
+<script src="assets/demo.js?v=1794614600"></script>
 </body>
 </html>
