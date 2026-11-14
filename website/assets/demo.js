@@ -18,7 +18,14 @@
 
   root.innerHTML = `
     <div class="wall"><img src="assets/logo.svg" alt=""></div>
-    <div class="hint">Try it: click the start button</div>
+    <div class="dicons">
+      <div class="dicon" data-open="files"><img src="${A}oneclick-files.svg" alt="">Home</div>
+      <div class="dicon" data-open="editor"><img src="${A}oneclick-editor.svg" alt="">Notes.txt</div>
+      <div class="dicon" data-open="store"><img src="${A}oneclick-store.svg" alt="">App Store</div>
+    </div>
+    <div class="pop" id="d-vol"><div style="display:flex;gap:10px;align-items:center"><img src="${A}tray-audio-high.svg" width="18" alt=""><input type="range" min="0" max="100" value="70" aria-label="Volume"><span id="d-volv">70%</span></div></div>
+    <div class="pop" id="d-cal"></div>
+    <div class="toast" id="d-toast"></div>
     <div class="menu" id="d-menu">
       <input placeholder="Search apps and settings" aria-label="Search">
       <h4>Pinned</h4><div class="tiles"></div>
@@ -29,8 +36,8 @@
       <button class="tb" id="d-start" aria-label="Start"><img src="assets/logo.svg" alt=""></button>
       <span id="d-pins" style="display:flex;gap:4px"></span>
       <div class="tray">
-        <img src="${A}tray-bell.svg" alt=""><img src="${A}tray-audio-high.svg" alt=""><img src="${A}tray-brightness.svg" alt=""><img src="${A}tray-wired.svg" alt="">
-        <div class="clock"><div id="d-time"></div><div id="d-date"></div></div>
+        <img src="${A}tray-bell.svg" alt="" title="No new notifications"><img src="${A}tray-audio-high.svg" alt="" id="d-volb" title="Volume" style="cursor:pointer"><img src="${A}tray-brightness.svg" alt="" title="Brightness"><img src="${A}tray-wired.svg" alt="" title="Connected">
+        <div class="clock" id="d-clock" style="cursor:pointer"><div id="d-time"></div><div id="d-date"></div></div>
       </div>
       <div class="corner" title="Show the home screen"></div>
     </div>`;
@@ -64,7 +71,7 @@
   function toggleMenu(show) {
     const on = show ?? !menu.classList.contains('show');
     menu.classList.toggle('show', on);
-    if (on) { search.value = ''; fillMenu(); search.focus({ preventScroll: true }); root.querySelector('.hint').style.opacity = 0; }
+    if (on) { search.value = ''; fillMenu(); search.focus({ preventScroll: true }); }
   }
   root.querySelector('#d-start').onclick = e => { e.stopPropagation(); toggleMenu(); };
   search.oninput = () => fillMenu(search.value.trim());
@@ -160,7 +167,7 @@
     store(body) {
       const p = el('div', 'pane'); body.appendChild(p);
       [['Steam', 'com.valvesoftware.Steam.png'], ['Spotify', 'com.spotify.Client.png'], ['LibreOffice', 'org.libreoffice.LibreOffice.png'], ['Discord', 'com.discordapp.Discord.png'], ['VLC', 'org.videolan.VLC.png']].forEach(([n, f]) => {
-        const b = el('button', 'dbtn alt', 'Install'); b.onclick = () => { b.textContent = 'Installing...'; b.disabled = true; setTimeout(() => { b.textContent = 'Installed'; b.className = 'dbtn'; }, 1100); };
+        const b = el('button', 'dbtn alt', 'Install'); b.onclick = () => { b.textContent = 'Installing...'; b.disabled = true; setTimeout(() => { b.textContent = 'Installed'; b.className = 'dbtn'; window.OneClickDemoToast(n + ' is installed', 'Find it in the start menu.'); }, 1100); };
         const r = el('div', 'row', `<div style="display:flex;gap:12px;align-items:center"><img src="${A}${f}" width="34" height="34" alt="">${n}</div>`); r.appendChild(b); p.appendChild(r); });
     },
   };
@@ -174,9 +181,23 @@
       <path d="M74 72.5 A76 76 0 1 0 166 72.5" stroke="#2dd4bf" stroke-width="26" data-w="3"/><path d="M250 116 V209" stroke="#fff" stroke-width="24" data-w=".7"/><path d="M250 163 A38 38 0 0 1 326 163 V209" stroke="#fff" stroke-width="24" data-w="1.1"/><path d="M368 163 H460 A46 46 0 1 0 446.5 195.5" stroke="#fff" stroke-width="24" data-w="2"/><path d="M648.2 84.1 A76 76 0 1 0 648.2 181.9" stroke="#fff" stroke-width="24" data-w="2.3"/><path d="M712 57 V209" stroke="#fff" stroke-width="24" data-w=".9"/><path d="M766 116 V209" stroke="#fff" stroke-width="24" data-w=".7"/><path d="M895.2 133.4 A46 46 0 1 0 895.2 192.6" stroke="#fff" stroke-width="24" data-w="1.5"/><path d="M958 57 V209" stroke="#fff" stroke-width="24" data-w=".9"/><path d="M1012 116 L958 168" stroke="#fff" stroke-width="24" data-w=".5"/><path d="M979 148 L1016 209" stroke="#fff" stroke-width="24" data-w=".5"/></g>
       <circle class="o" cx="120" cy="58.5" r="0" fill="#fff"/><ellipse class="i" cx="766" cy="-40" rx="15" ry="15" fill="#2dd4bf" opacity="0"/></svg>`);
     root.appendChild(b);
-    window.OneClickWrite(b.querySelector('svg'), () => { b.style.transition = 'opacity .5s'; b.style.opacity = 0; setTimeout(() => b.remove(), 500); });
+    window.OneClickWrite(b.querySelector('svg'), () => { b.style.transition = 'opacity .5s'; b.style.opacity = 0; setTimeout(() => { b.remove(); window.OneClickDemoToast('You\u2019re up to date', 'OneClick OS 0.2 is installed.'); }, 500); });
   }
   function reset() { Object.keys(wins).forEach(id => { wins[id].remove(); delete wins[id]; }); root.classList.remove('floating', 'hide'); document.getElementById('d-accent')?.remove(); pinButtons(); }
+
+  // ---- desktop icons, tray pop-ups, notifications ----
+  root.querySelectorAll('.dicon').forEach(d => { d.onclick = e => { e.stopPropagation(); root.querySelectorAll('.dicon').forEach(x => x.classList.toggle('sel', x === d)); }; d.ondblclick = () => open(d.dataset.open); });
+  const vol = root.querySelector('#d-vol'), cal = root.querySelector('#d-cal');
+  const pop = (el, show) => { [vol, cal].forEach(p => p.classList.toggle('show', p === el && (show ?? !el.classList.contains('show')))); };
+  root.querySelector('#d-volb').onclick = e => { e.stopPropagation(); pop(vol); };
+  vol.onclick = e => e.stopPropagation();
+  vol.querySelector('input').oninput = e => root.querySelector('#d-volv').textContent = e.target.value + '%';
+  root.querySelector('#d-clock').onclick = e => { e.stopPropagation(); const d = new Date(), y = d.getFullYear(), m = d.getMonth(), first = (new Date(y, m, 1).getDay() + 6) % 7, days = new Date(y, m + 1, 0).getDate();
+    let h = '<b>' + d.toLocaleDateString([], { month: 'long', year: 'numeric' }) + '</b><div class="calg">' + ['M','T','W','T','F','S','S'].map(x => '<i>' + x + '</i>').join('') + '<span></span>'.repeat(first);
+    for (let i = 1; i <= days; i++) h += '<span' + (i === d.getDate() ? ' class="on"' : '') + '>' + i + '</span>';
+    cal.innerHTML = h + '</div>'; pop(cal); };
+  root.addEventListener('click', () => { pop(vol, false); root.querySelectorAll('.dicon').forEach(x => x.classList.remove('sel')); });
+  window.OneClickDemoToast = (title, text) => { const t = root.querySelector('#d-toast'); t.innerHTML = '<b>' + title + '</b><span>' + text + '</span>'; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3800); };
 
   pinButtons(); fillMenu();
 })();

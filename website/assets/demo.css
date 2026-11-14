@@ -82,3 +82,20 @@
 .demo .boot svg { width: 46%; overflow: visible; }
 .demo .hint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: #2dd4bf; color: #0b3b36; font-weight: 600; font-size: 13px; padding: 6px 14px; border-radius: 999px; z-index: 800; transition: opacity .4s; pointer-events: none; }
 @media (max-width: 700px) { .demo { aspect-ratio: 3 / 4; } .demo .split { grid-template-columns: 110px 1fr; } }
+
+.demo .dicons { position: absolute; left: 14px; top: 14px; display: grid; gap: 6px; z-index: 1; }
+.demo .dicon { width: 78px; text-align: center; font-size: 12px; padding: 8px 4px; border-radius: 6px; cursor: default; border: 1px solid transparent; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+.demo .dicon img { width: 38px; height: 38px; display: block; margin: 0 auto 5px; }
+.demo .dicon:hover { background: rgba(255,255,255,.06); }
+.demo .dicon.sel { background: rgba(45,212,191,.18); border-color: rgba(45,212,191,.5); }
+.demo .pop { position: absolute; right: 10px; bottom: 54px; background: #101a31; border: 1px solid #22304d; border-radius: 10px; padding: 14px; z-index: 950; opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .15s, transform .18s; box-shadow: 0 14px 30px rgba(0,0,0,.4); }
+.demo .pop.show { opacity: 1; transform: none; pointer-events: auto; }
+.demo .pop input[type=range] { width: 150px; accent-color: #2dd4bf; }
+.demo .calg { display: grid; grid-template-columns: repeat(7, 28px); gap: 2px; margin-top: 10px; text-align: center; font-size: 12px; }
+.demo .calg i { font-style: normal; color: #8a97ae; } .demo .calg span { padding: 5px 0; border-radius: 50%; } .demo .calg span.on { background: #2dd4bf; color: #0b3b36; font-weight: 700; }
+.demo .toast { position: absolute; right: 12px; bottom: 58px; width: 250px; background: #101a31; border: 1px solid #22304d; border-left: 3px solid #2dd4bf; border-radius: 8px; padding: 12px 14px; z-index: 960; opacity: 0; transform: translateX(30px); pointer-events: none; transition: opacity .25s, transform .3s cubic-bezier(.2,.8,.2,1); box-shadow: 0 14px 30px rgba(0,0,0,.4); }
+.demo .toast.show { opacity: 1; transform: none; }
+.demo .toast b { display: block; } .demo .toast span { color: #8a97ae; font-size: 13px; }
+.demo .tb { transition: background .12s; }
+.demo .tb[title]:hover::before { content: attr(title); position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); background: #101a31; border: 1px solid #22304d; padding: 4px 9px; border-radius: 6px; font-size: 12px; white-space: nowrap; pointer-events: none; }
+@media (max-width: 700px) { .demo .dicons { display: none; } }
