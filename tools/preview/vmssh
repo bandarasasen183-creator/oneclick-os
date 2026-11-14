@@ -1,0 +1,3 @@
+#!/bin/bash
+# vmssh CMD...   run a command in the preview as tester (with the desktop session's environment)
+exec ssh -i "$HOME/OneClickVM/id" -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=8 tester@127.0.0.1 "export XDG_RUNTIME_DIR=/run/user/\$(id -u) DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/\$(id -u)/bus WAYLAND_DISPLAY=wayland-1 QT_QPA_PLATFORM=wayland; $*"
