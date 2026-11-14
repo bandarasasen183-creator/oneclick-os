@@ -206,7 +206,7 @@ window.OneClickWrite = function (svg, onDone) {
 (function () {
   const box = document.getElementById('understand');
   if (!box) return;
-  const set = () => document.querySelectorAll('.build .btn').forEach(b => b.setAttribute('aria-disabled', !box.checked));
+  const set = () => document.querySelectorAll('.build .btn:not(.soon)').forEach(b => b.setAttribute('aria-disabled', !box.checked));
   box.addEventListener('change', set); set();
 })();
 
