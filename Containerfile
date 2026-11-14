@@ -23,7 +23,7 @@ COPY --from=pages /out /pages
 
 FROM ${BASE_IMAGE}
 ARG IMAGE_NAME=oneclick-os
-ARG IMAGE_REGISTRY=ghcr.io/bandarasasen183-creator
+ARG IMAGE_REGISTRY=ghcr.io/codecraft-solutions-team
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
