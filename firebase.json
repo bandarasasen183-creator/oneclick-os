@@ -3,9 +3,39 @@
     "site": "oneclick-os",
     "public": "website",
     "cleanUrls": true,
-    "ignore": ["**/.*"],
+    "ignore": [
+      "**/.*"
+    ],
     "headers": [
-      { "source": "**/*.@(css|js|woff2|svg|png|jpg)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }] }
+      {
+        "source": "**/*.@(css|js|woff2|svg|png|jpg)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/api/report",
+        "function": {
+          "functionId": "oneclickReport",
+          "region": "us-central1"
+        }
+      }
     ]
-  }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "oneclick",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "*.log"
+      ]
+    }
+  ]
 }

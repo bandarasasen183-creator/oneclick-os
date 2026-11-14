@@ -63,7 +63,6 @@ html[data-style=story] .in .doodle path, html[data-style=story] .doodle.in path 
 
 /* gentle motion: pages settle in, headings rise, cards arrive one after another */
 @media (prefers-reduced-motion: no-preference) {
-  html[data-style=story] main { animation: pagein .5s ease both; }
   html[data-style=story] .hero h1, html[data-style=story] .pagehead h1 { animation: rise .7s .15s cubic-bezier(.2,.8,.2,1) both; }
   html[data-style=story] .hero .lede, html[data-style=story] .pagehead p { animation: rise .7s .3s cubic-bezier(.2,.8,.2,1) both; }
   html[data-style=story] .hero .ctas { animation: rise .7s .45s cubic-bezier(.2,.8,.2,1) both; }
@@ -79,3 +78,7 @@ html[data-style=story] .in .doodle path, html[data-style=story] .doodle.in path 
 }
 @keyframes pagein { from { opacity: 0; } } @keyframes rise { from { opacity: 0; transform: translateY(22px); } }
 @keyframes nod { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(-1deg) translateY(-3px); } }
+
+html[data-style=story] .about-logo { border: 2px solid var(--line); border-radius: var(--wobble2); box-shadow: 4px 5px 0 var(--line); }
+html[data-style=story] .report input, html[data-style=story] .report textarea, html[data-style=story] .report select { border: 2px solid var(--line); border-radius: 10px 14px 9px 13px; font-family: "Inter Tight", sans-serif; }
+html[data-style=story] .chapter { margin-bottom: 2px; }

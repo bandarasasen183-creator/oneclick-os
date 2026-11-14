@@ -209,14 +209,26 @@ window.OneClickWrite = function (svg, onDone) {
   box.addEventListener('change', set); set();
 })();
 
-/* ---------- report form: builds an email to us with the details filled in ---------- */
+/* ---------- report form: files the report on GitHub through our Firebase function ---------- */
 (function () {
   const f = document.getElementById('report');
   if (!f) return;
-  f.addEventListener('submit', e => {
+  const btn = f.querySelector('button[type=submit]'), sent = document.getElementById('sent');
+  f.addEventListener('submit', async e => {
     e.preventDefault();
-    const d = new FormData(f), line = (k, label) => d.get(k) ? label + ': ' + d.get(k) + '\n' : '';
-    const body = line('kind', 'Type') + '\n' + line('what', 'What happened') + '\n' + line('expected', 'Expected') + '\n' + line('pc', 'Computer') + line('version', 'Version') + line('email', 'Reply to');
-    location.href = 'mailto:oneclick@codecraftsol.org?subject=' + encodeURIComponent('OneClick report: ' + d.get('kind')) + '&body=' + encodeURIComponent(body);
+    btn.disabled = true; btn.textContent = 'Sending...';
+    const data = Object.fromEntries(new FormData(f));
+    try {
+      const r = await fetch('/api/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const out = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(out.error || 'Something went wrong. Please try again.');
+      f.querySelectorAll('label, .btn, #report-note').forEach(el => el.hidden = true);
+      sent.hidden = false;
+      sent.innerHTML = `<h2>Thank you. Report #${out.number} is filed.</h2><p>You can follow it <a href="${out.url}">on GitHub</a>.</p><button class="btn ghost" type="button" onclick="location.reload()">Send another</button>`;
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'Send report';
+      let msg = f.querySelector('.err'); if (!msg) { msg = document.createElement('p'); msg.className = 'err'; btn.after(msg); }
+      msg.textContent = err.message === 'Failed to fetch' ? 'Could not reach our server. Check your connection and try again.' : err.message;
+    }
   });
 })();

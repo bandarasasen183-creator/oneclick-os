@@ -262,3 +262,23 @@
   .report input:focus, .report textarea:focus, .report select:focus { border-color: var(--teal); }
   .report .btn { justify-self: start; }
   .devbar .rep { margin-left: 14px; }
+
+  /* ---- consistency pass ---- */
+  .pagehead { padding: 64px 0 0; }
+  .pagehead + section, .pagehead + section.paper { padding-top: 44px; }
+  .chapter { margin-bottom: 6px; }
+  .about-logo { display: flex; align-items: center; gap: 28px; padding: 28px; margin: 6px 0 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--ink-2); }
+  .about-logo img:first-child { width: 72px; height: 72px; }
+  .about-logo img:last-child { height: 44px; }
+  .download .warn, .download .builds, .download .confirm { margin-left: 0; margin-right: 0; }
+  .download .steps { max-width: 760px; }
+  .legal, .download .wrap > * { max-width: 760px; }
+  footer .wrap { align-items: center; }
+
+  .report .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .report .err { color: #dc2626; margin: 0; font-weight: 600; }
+  .report .sent h2 { margin: 0 0 8px; }
+  /* body text lines up with the page title on every page */
+  .wrap.legal { max-width: var(--max); }
+  .wrap.legal > * { max-width: 760px; }
+  .wrap.legal > .about-logo { max-width: 760px; }
