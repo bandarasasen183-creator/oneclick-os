@@ -9,7 +9,8 @@
 (function () {
   let saved = null; try { saved = localStorage.getItem('oneclick-theme'); } catch (e) {}
   const apply = t => { document.documentElement.dataset.theme = t;
-    document.querySelectorAll('img[data-wordmark]').forEach(i => i.src = 'assets/wordmark-' + (t === 'light' ? 'light' : 'dark') + '.svg'); };
+    document.querySelectorAll('img[data-wordmark]').forEach(i => i.src = 'assets/wordmark-' + (t === 'light' ? 'light' : 'dark') + '.svg');
+    document.querySelectorAll('img[data-logo]').forEach(i => i.src = 'assets/logo' + (t === 'light' ? '-light' : '') + '.svg'); };
   const current = () => saved || (document.documentElement.dataset.style === 'story' || matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
   apply(current());
   document.addEventListener('DOMContentLoaded', () => {
